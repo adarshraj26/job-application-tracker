@@ -1,72 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Job Application Tracker</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .card {
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #666;
-            margin-bottom: 10px;
-        }
-        .time {
-            color: #999;
-            font-size: 14px;
-        }
-    </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
-    
-    <script type="text/babel">
-        function App() {
-            const [time, setTime] = React.useState(new Date().toLocaleString());
-            
-            React.useEffect(() => {
-                const timer = setInterval(() => {
-                    setTime(new Date().toLocaleString());
-                }, 1000);
-                return () => clearInterval(timer);
-            }, []);
-            
-            return (
-                <div className="container">
-                    <div className="card">
-                        <h1>Job Application Tracker</h1>
-                        <p>React is working with CDN!</p>
-                        <p className="time">Current time: {time}</p>
-                    </div>
-                </div>
-            );
-        }
-        
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
-</body>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>
