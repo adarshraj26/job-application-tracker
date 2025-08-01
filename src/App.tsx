@@ -1,61 +1,17 @@
-import Layout from '@/components/common/Layout'
-import { ApplicationProvider } from '@/context/ApplicationContext'
-import { AuthProvider } from '@/context/AuthContext'
-import { ThemeProvider } from '@/context/ThemeContext'
-import ApplicationsPage from '@/pages/ApplicationsPage'
-import DashboardPage from '@/pages/DashboardPage'
-import HomePage from '@/pages/HomePage'
-import LoginPage from '@/pages/LoginPage'
-import SignupPage from '@/pages/SignupPage'
-import SettingsPage from '@/pages/SettingsPage'
-import ProtectedRoute from '@/components/common/ProtectedRoute'
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
+import React from 'react'
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <ApplicationProvider>
-          <Router>
-            <Routes>
-              {/* Auth Routes */}
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignupPage />} />
-              
-              {/* Protected Routes */}
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <HomePage />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/applications" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <ApplicationsPage />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <DashboardPage />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-              <Route path="/settings" element={
-                <ProtectedRoute>
-                  <Layout>
-                    <SettingsPage />
-                  </Layout>
-                </ProtectedRoute>
-              } />
-            </Routes>
-          </Router>
-        </ApplicationProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold text-gray-800 mb-4">Job Application Tracker</h1>
+        <p className="text-gray-600 mb-2">Welcome to your job search companion!</p>
+        <p className="text-sm text-gray-500">React + TypeScript + Vite is working!</p>
+        <div className="mt-4">
+          <p className="text-xs text-gray-400">Current time: {new Date().toLocaleString()}</p>
+        </div>
+      </div>
+    </div>
   )
 }
 
