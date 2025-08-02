@@ -2,7 +2,7 @@ services:
   - type: web
     name: job-application-tracker
     env: node
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install; npm run build
     startCommand: node server.js
     healthCheckPath: /api/health
     envVars:
