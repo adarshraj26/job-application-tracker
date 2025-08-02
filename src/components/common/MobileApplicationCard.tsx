@@ -89,7 +89,7 @@ export default function MobileApplicationCard({
             <div className="flex flex-wrap gap-1">
               {application.interviewRounds.map((round, index) => (
                 <Badge 
-                  key={round.id} 
+                  key={round.id || `round-${index}`} 
                   variant="outline" 
                   className="text-xs"
                 >

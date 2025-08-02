@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import apiService from '@/services/api'
+import { apiService } from '@/services/api'
 
 interface User {
   id: string
@@ -37,18 +37,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token')
+      console.log('Auth initialization - Token exists:', !!token)
+      
       if (token) {
         try {
+          console.log('Attempting to get current user...')
           const response = await apiService.getCurrentUser()
+          console.log('Get current user response:', response)
+          
           if (response.status === 'success' && response.data) {
-            setUser(response.data as User)
+            const userData = response.data.user || response.data
+            setUser({
+              id: userData.id || 'mock-user-id',
+              email: userData.email || 'mock@example.com',
+              fullName: userData.fullName || 'Mock User',
+              isProUser: userData.isProUser || false,
+              isPro: userData.isPro || false,
+              preferences: userData.preferences || {
+                theme: 'light',
+                notifications: { email: true, browser: true }
+              }
+            })
+            console.log('User authenticated successfully')
           } else {
+            console.log('Failed to authenticate user, removing token')
             localStorage.removeItem('token')
           }
         } catch (error) {
           console.error('Failed to get current user:', error)
           localStorage.removeItem('token')
         }
+      } else {
+        console.log('No token found, user not authenticated')
       }
       setIsLoading(false)
     }
@@ -59,39 +79,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      // Try real API first
-      try {
-        const response = await apiService.login({ email, password })
-        if (response.status === 'success' && response.data) {
-          const data = response.data as any
-          localStorage.setItem('token', data.token)
-          setUser(data.user)
-          return
-        }
-      } catch (apiError) {
-        console.log('API login failed, using mock auth:', apiError)
-      }
-
-      // Mock authentication for development
-      const mockUser: User = {
-        id: '1',
-        email,
-        fullName: email.split('@')[0],
-        isProUser: false,
-        isPro: false,
-        preferences: {
-          theme: 'light',
-          notifications: {
-            email: true,
-            browser: true
-          }
-        },
-        lastLogin: new Date(),
-        createdAt: new Date()
-      }
+      console.log('Attempting login with:', email)
+      const response = await apiService.login({ email, password })
+      console.log('Login response:', response)
       
-      localStorage.setItem('token', 'mock-token-' + Date.now())
-      setUser(mockUser)
+      if (response.status === 'success' && response.data) {
+        const data = response.data as any
+        localStorage.setItem('token', data.token)
+        const userData = data.user || data
+        setUser({
+          id: userData.id || 'mock-user-id',
+          email: userData.email || 'mock@example.com',
+          fullName: userData.fullName || 'Mock User',
+          isProUser: userData.isProUser || false,
+          isPro: userData.isPro || false,
+          preferences: userData.preferences || {
+            theme: 'light',
+            notifications: { email: true, browser: true }
+          }
+        })
+        console.log('Login successful, user set:', userData)
+      } else {
+        throw new Error(response.message || 'Login failed')
+      }
     } catch (error) {
       console.error('Login error:', error)
       throw error
@@ -103,39 +113,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signup = async (fullName: string, email: string, password: string) => {
     setIsLoading(true)
     try {
-      // Try real API first
-      try {
-        const response = await apiService.register({ fullName, email, password })
-        if (response.status === 'success' && response.data) {
-          const data = response.data as any
-          localStorage.setItem('token', data.token)
-          setUser(data.user)
-          return
-        }
-      } catch (apiError) {
-        console.log('API signup failed, using mock auth:', apiError)
-      }
-
-      // Mock authentication for development
-      const mockUser: User = {
-        id: '1',
-        email,
-        fullName,
-        isProUser: false,
-        isPro: false,
-        preferences: {
-          theme: 'light',
-          notifications: {
-            email: true,
-            browser: true
+      const response = await apiService.register({ fullName, email, password })
+      if (response.status === 'success' && response.data) {
+        const data = response.data as any
+        localStorage.setItem('token', data.token)
+        const userData = data.user || data
+        setUser({
+          id: userData.id || 'mock-user-id',
+          email: userData.email || 'mock@example.com',
+          fullName: userData.fullName || 'Mock User',
+          isProUser: userData.isProUser || false,
+          isPro: userData.isPro || false,
+          preferences: userData.preferences || {
+            theme: 'light',
+            notifications: { email: true, browser: true }
           }
-        },
-        lastLogin: new Date(),
-        createdAt: new Date()
+        })
+      } else {
+        throw new Error(response.message || 'Signup failed')
       }
-      
-      localStorage.setItem('token', 'mock-token-' + Date.now())
-      setUser(mockUser)
     } catch (error) {
       console.error('Signup error:', error)
       throw error

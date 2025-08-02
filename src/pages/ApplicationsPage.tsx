@@ -37,6 +37,8 @@ export default function ApplicationsPage() {
 
   // Check authentication
   useEffect(() => {
+    console.log('ApplicationsPage: isAuthenticated:', isAuthenticated)
+    console.log('ApplicationsPage: user:', user)
     if (!isAuthenticated) {
       console.log('ApplicationsPage: Not authenticated, redirecting to login')
       navigate('/login')

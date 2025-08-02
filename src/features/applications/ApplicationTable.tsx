@@ -62,8 +62,8 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
             </TableRow>
           </TableHeader>
           <TableBody>
-            {applications.map((application) => (
-              <TableRow key={application.id}>
+            {applications.map((application, index) => (
+              <TableRow key={application.id || `app-${index}`}>
                 <TableCell className="font-medium hidden sm:table-cell">
                   {application.companyName}
                 </TableCell>

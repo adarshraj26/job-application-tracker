@@ -100,9 +100,9 @@ export default function ApplicationsList({ applications: propApplications }: App
               <ApplicationTable applications={displayApplications} />
             ) : (
               <div className="space-y-4">
-                {displayApplications.map((application) => (
+                {displayApplications.map((application, index) => (
                   <MobileApplicationCard
-                    key={application.id}
+                    key={application.id || `app-${index}`}
                     application={application}
                     onEdit={handleEdit}
                     onDelete={handleDelete}

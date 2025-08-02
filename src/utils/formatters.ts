@@ -22,11 +22,16 @@ export function formatRelativeTime(date: Date | string): string {
   }
 }
 
-export function formatCurrency(amount: string): string {
+export function formatCurrency(amount: string | number | undefined): string {
+  if (!amount) return '₹0'
+  
+  // Convert to string if it's a number
+  const amountStr = typeof amount === 'number' ? amount.toString() : amount
+  
   // Remove any non-numeric characters except dots and commas
-  const numericValue = amount.replace(/[^0-9.,]/g, '')
+  const numericValue = amountStr.replace(/[^0-9.,]/g, '')
 
-  if (!numericValue) return amount
+  if (!numericValue) return '₹0'
 
   try {
     const number = parseFloat(numericValue.replace(',', ''))
@@ -37,7 +42,7 @@ export function formatCurrency(amount: string): string {
       maximumFractionDigits: 0
     }).format(number)
   } catch {
-    return amount
+    return '₹0'
   }
 }
 

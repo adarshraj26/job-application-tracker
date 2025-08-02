@@ -127,9 +127,13 @@ export function ApplicationProvider({ children }: ApplicationProviderProps) {
 
   const loadApplications = useCallback(async () => {
     try {
+      console.log('Loading applications...')
       dispatch({ type: 'SET_LOADING', payload: true })
       const response = await apiService.getApplications()
+      console.log('Get applications response:', response)
+      
       if (response.status === 'success' && response.data?.applications) {
+        console.log('Applications loaded successfully:', response.data.applications.length, 'applications')
         dispatch({ type: 'SET_APPLICATIONS', payload: response.data.applications })
       } else {
         console.warn('Invalid response format:', response)
@@ -150,64 +154,63 @@ export function ApplicationProvider({ children }: ApplicationProviderProps) {
   }, [loadApplications])
 
   const addApplication = useCallback(async (applicationData: ApplicationFormData) => {
+    console.log('🔵 ApplicationContext: addApplication called with data:', applicationData)
+    console.log('🔵 ApplicationContext: apiService available:', !!apiService)
+    console.log('🔵 ApplicationContext: apiService.createApplication available:', !!apiService.createApplication)
+    
     try {
+      console.log('⏳ ApplicationContext: Setting loading to true')
       dispatch({ type: 'SET_LOADING', payload: true })
       
-      // Try real API first
-      try {
-        const response = await apiService.createApplication(applicationData)
-        console.log('Create application response:', response) // Debug log
-        
-        if (response.status === 'success' && response.data) {
-          // The backend returns { application: {...} } structure
-          const application = response.data.application || response.data
-          dispatch({ type: 'ADD_APPLICATION', payload: application })
-          return
-        }
-      } catch (apiError) {
-        console.log('API create application failed, using mock:', apiError)
-      }
-
-      // Mock application creation for development
-      const mockApplication: JobApplication = {
-        id: 'app-' + Date.now(),
-        companyName: applicationData.companyName,
-        position: applicationData.position,
-        location: applicationData.location,
-        workMode: applicationData.workMode,
-        status: applicationData.status,
-        outcome: applicationData.outcome,
-        source: applicationData.source,
-        priority: applicationData.priority,
-        salary: applicationData.salary,
-        notes: applicationData.notes,
-        mailReceived: applicationData.mailReceived || false,
-        appliedDate: applicationData.appliedDate ? new Date(applicationData.appliedDate) : new Date(),
-        interviewRounds: [],
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+      console.log('📞 ApplicationContext: Calling apiService.createApplication...')
+      const response = await apiService.createApplication(applicationData)
+      console.log('📥 ApplicationContext: API response received:', response)
+      console.log('📥 ApplicationContext: Response status:', response.status)
+      console.log('📥 ApplicationContext: Response data:', response.data)
+      console.log('📥 ApplicationContext: Response message:', response.message)
       
-      dispatch({ type: 'ADD_APPLICATION', payload: mockApplication })
-      console.log('Mock application created:', mockApplication)
+      if (response.status === 'success' && response.data) {
+        // The backend returns { application: {...} } structure
+        const application = (response.data as any).application || response.data
+        console.log('✅ ApplicationContext: Application created successfully, adding to state:', application)
+        console.log('✅ ApplicationContext: Application ID:', application.id)
+        console.log('✅ ApplicationContext: Application company:', application.companyName)
+        
+        dispatch({ type: 'ADD_APPLICATION', payload: application })
+        console.log('✅ ApplicationContext: Dispatched ADD_APPLICATION action')
+        
+        // Refresh the applications list to ensure we have the latest data
+        console.log('🔄 ApplicationContext: Refreshing applications list...')
+        setTimeout(() => {
+          loadApplications()
+        }, 100)
+      } else {
+        console.error('❌ ApplicationContext: API returned error:', response)
+        console.error('❌ ApplicationContext: Response status:', response.status)
+        console.error('❌ ApplicationContext: Response message:', response.message)
+        throw new Error(response.message || 'Failed to create application')
+      }
     } catch (error) {
-      console.error('Error adding application:', error)
+      console.error('❌ ApplicationContext: Error adding application:', error)
+      console.error('❌ ApplicationContext: Error message:', error instanceof Error ? error.message : 'Unknown error')
+      console.error('❌ ApplicationContext: Error stack:', error instanceof Error ? error.stack : 'No stack')
       dispatch({ type: 'SET_ERROR', payload: 'Failed to add application. Please check your connection and try again.' })
       throw error
     } finally {
+      console.log('🏁 ApplicationContext: Setting loading to false')
       dispatch({ type: 'SET_LOADING', payload: false })
     }
-  }, [])
+  }, [loadApplications])
 
   const updateApplication = useCallback(async (id: string, applicationData: ApplicationFormData) => {
     try {
       dispatch({ type: 'SET_LOADING', payload: true })
       const response = await apiService.updateApplication(id, applicationData)
       if (response.status === 'success' && response.data) {
-        dispatch({ type: 'UPDATE_APPLICATION', payload: response.data as any })
+        dispatch({ type: 'UPDATE_APPLICATION', payload: response.data.application || response.data as any })
       } else {
-        dispatch({ type: 'SET_ERROR', payload: response.message || 'Failed to update application' })
-        throw new Error(response.message || 'Failed to update application')
+        dispatch({ type: 'SET_ERROR', payload: 'Failed to update application' })
+        throw new Error('Failed to update application')
       }
     } catch (error) {
       console.error('Error updating application:', error)

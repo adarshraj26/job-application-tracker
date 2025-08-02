@@ -1,5 +1,17 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+// Mock data for development - persisted in localStorage
+const getMockApplications = (): any[] => {
+  const stored = localStorage.getItem('mockApplications');
+  return stored ? JSON.parse(stored) : [];
+};
+
+const setMockApplications = (applications: any[]) => {
+  localStorage.setItem('mockApplications', JSON.stringify(applications));
+};
+
+let mockApplications: any[] = getMockApplications();
+
 interface ApiResponse<T = any> {
   status: 'success' | 'error';
   message?: string;
@@ -23,6 +35,7 @@ interface ApplicationResponse {
 class ApiService {
   private getAuthHeaders(): HeadersInit {
     const token = localStorage.getItem('token');
+    console.log('Getting auth headers, token exists:', !!token);
     return {
       'Content-Type': 'application/json',
       ...(token && { Authorization: `Bearer ${token}` }),
@@ -30,51 +43,71 @@ class ApiService {
   }
 
   private async handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
+    console.log('🟡 ApiService: handleResponse called with response status:', response.status);
+    console.log('🟡 ApiService: Response ok:', response.ok);
+    
     const data = await response.json();
+    console.log('🟡 ApiService: Parsed response data:', data);
     
     if (!response.ok) {
+      console.error('🟡 ApiService: Response not ok, throwing error');
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
     
+    console.log('🟡 ApiService: Returning successful response data');
     return data;
   }
 
-  // Authentication
-  async register(userData: { fullName: string; email: string; password: string }) {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(userData),
-    });
-    return this.handleResponse(response);
+  // Check if backend is available
+  private async isBackendAvailable(): Promise<boolean> {
+    console.log('🟡 ApiService: Checking if backend is available at:', `${API_BASE_URL}/health`);
+    try {
+      const response = await fetch(`${API_BASE_URL}/health`, { 
+        method: 'GET',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        // Add timeout to prevent long waits
+        signal: AbortSignal.timeout(5000)
+      });
+      console.log('🟡 ApiService: Health check response status:', response.status);
+      console.log('🟡 ApiService: Health check response ok:', response.ok);
+      return response.ok;
+    } catch (error) {
+      console.log('🟡 ApiService: Backend not available, using mock API. Error:', error);
+      return false;
+    }
   }
 
-  async login(credentials: { email: string; password: string }) {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(credentials),
-    });
-    return this.handleResponse(response);
+  // Real backend implementation for createApplication
+  async createApplication(applicationData: any): Promise<ApiResponse<ApplicationResponse>> {
+    console.log('🟡 ApiService: createApplication called with data:', applicationData);
+    console.log('🟡 ApiService: API_BASE_URL:', API_BASE_URL);
+    
+    console.log('🟡 ApiService: Using REAL backend for createApplication');
+    console.log('🟡 ApiService: Making fetch request to:', `${API_BASE_URL}/applications`);
+    console.log('🟡 ApiService: Request headers:', this.getAuthHeaders());
+    console.log('🟡 ApiService: Request body:', JSON.stringify(applicationData));
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/applications`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(applicationData),
+      });
+      
+      console.log('🟡 ApiService: Real backend response status:', response.status);
+      console.log('🟡 ApiService: Real backend response ok:', response.ok);
+      
+      return this.handleResponse<ApplicationResponse>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: Error calling real backend:', error);
+      throw error;
+    }
   }
 
-  async getCurrentUser() {
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
-  }
-
-  async updatePassword(passwords: { currentPassword: string; newPassword: string }) {
-    const response = await fetch(`${API_BASE_URL}/auth/updatepassword`, {
-      method: 'PUT',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(passwords),
-    });
-    return this.handleResponse(response);
-  }
-
-  // Applications
+  // Real backend implementation for getApplications
   async getApplications(params?: {
     page?: number;
     limit?: number;
@@ -85,6 +118,9 @@ class ApiService {
     sortBy?: string;
     sortOrder?: 'asc' | 'desc';
   }): Promise<ApiResponse<ApplicationsResponse>> {
+    console.log('🟡 ApiService: Getting applications with params:', params);
+    
+    console.log('🟡 ApiService: Using REAL backend for getApplications');
     const searchParams = new URLSearchParams();
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -94,161 +130,456 @@ class ApiService {
       });
     }
 
-    const response = await fetch(`${API_BASE_URL}/applications?${searchParams}`, {
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse<ApplicationsResponse>(response);
+    const url = `${API_BASE_URL}/applications?${searchParams}`;
+    console.log('🟡 ApiService: Making request to:', url);
+    
+    try {
+      const response = await fetch(url, {
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse<ApplicationsResponse>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: Error calling real backend:', error);
+      throw error;
+    }
   }
 
-  async getApplication(id: string) {
-    const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
+  // Authentication - Real backend implementation
+  async register(userData: { fullName: string; email: string; password: string }) {
+    console.log('🟡 ApiService: Using REAL backend for register');
+    
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(userData),
+    });
+    return this.handleResponse(response);
+  }
+
+  async login(credentials: { email: string; password: string }) {
+    console.log('🟡 ApiService: Using REAL backend for login');
+    
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(credentials),
+    });
+    return this.handleResponse(response);
+  }
+
+  async getCurrentUser() {
+    console.log('🟡 ApiService: Using REAL backend for getCurrentUser');
+    
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
       headers: this.getAuthHeaders(),
     });
     return this.handleResponse(response);
   }
 
-  async createApplication(applicationData: any): Promise<ApiResponse<ApplicationResponse>> {
-    const response = await fetch(`${API_BASE_URL}/applications`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(applicationData),
-    });
-    return this.handleResponse<ApplicationResponse>(response);
+  async updatePassword(passwords: { currentPassword: string; newPassword: string }) {
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/auth/updatepassword`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(passwords),
+      });
+      return this.handleResponse(response);
+    } else {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      return {
+        status: 'success',
+        message: 'Password updated successfully'
+      };
+    }
+  }
+
+  // Applications
+  async getApplication(id: string) {
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      const application = mockApplications.find(app => app.id === id);
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      
+      return {
+        status: 'success',
+        data: { application }
+      };
+    }
   }
 
   async updateApplication(id: string, applicationData: any) {
-    const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
-      method: 'PUT',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(applicationData),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(applicationData),
+      });
+      return this.handleResponse(response);
+    } else {
+      const index = mockApplications.findIndex(app => app.id === id);
+      if (index === -1) {
+        throw new Error('Application not found');
+      }
+      
+      mockApplications[index] = {
+        ...mockApplications[index],
+        ...applicationData,
+        updatedAt: new Date().toISOString()
+      };
+      setMockApplications(mockApplications);
+      
+      return {
+        status: 'success',
+        data: { application: mockApplications[index] }
+      };
+    }
   }
 
   async deleteApplication(id: string) {
-    const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
-      method: 'DELETE',
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      const index = mockApplications.findIndex(app => app.id === id);
+      if (index === -1) {
+        throw new Error('Application not found');
+      }
+      
+      mockApplications.splice(index, 1);
+      setMockApplications(mockApplications);
+      
+      return {
+        status: 'success',
+        message: 'Application deleted successfully'
+      };
+    }
   }
 
   async getApplicationStats() {
-    const response = await fetch(`${API_BASE_URL}/applications/stats`, {
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/stats`, {
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      const stats = {
+        totalApplications: mockApplications.length,
+        appliedCount: mockApplications.filter(app => app.status === 'Applied').length,
+        interviewingCount: mockApplications.filter(app => 
+          ['Technical Round 1', 'Technical Round 2', 'HR Round'].includes(app.status)
+        ).length,
+        selectedCount: mockApplications.filter(app => app.outcome === 'Selected').length,
+        rejectedCount: mockApplications.filter(app => app.outcome === 'Rejected').length
+      };
+      
+      return {
+        status: 'success',
+        data: { stats }
+      };
+    }
   }
 
   // Interview Rounds
   async addInterviewRound(applicationId: string, roundData: any) {
-    const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(roundData),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(roundData),
+      });
+      return this.handleResponse(response);
+    } else {
+      const application = mockApplications.find(app => app.id === applicationId);
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      
+      const round = {
+        id: Date.now().toString(),
+        ...roundData,
+        createdAt: new Date().toISOString()
+      };
+      
+      if (!application.interviewRounds) {
+        application.interviewRounds = [];
+      }
+      
+      application.interviewRounds.push(round);
+      
+      return {
+        status: 'success',
+        data: { round }
+      };
+    }
   }
 
   async updateInterviewRound(applicationId: string, roundId: string, roundData: any) {
-    const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds/${roundId}`, {
-      method: 'PUT',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(roundData),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds/${roundId}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(roundData),
+      });
+      return this.handleResponse(response);
+    } else {
+      const application = mockApplications.find(app => app.id === applicationId);
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      
+      const round = application.interviewRounds?.find((r: any) => r.id === roundId);
+      if (!round) {
+        throw new Error('Interview round not found');
+      }
+      
+      Object.assign(round, roundData, { updatedAt: new Date().toISOString() });
+      
+      return {
+        status: 'success',
+        data: { round }
+      };
+    }
   }
 
   async deleteInterviewRound(applicationId: string, roundId: string) {
-    const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds/${roundId}`, {
-      method: 'DELETE',
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/applications/${applicationId}/interview-rounds/${roundId}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      const application = mockApplications.find(app => app.id === applicationId);
+      if (!application) {
+        throw new Error('Application not found');
+      }
+      
+      const roundIndex = application.interviewRounds?.findIndex((r: any) => r.id === roundId);
+      if (roundIndex === -1) {
+        throw new Error('Interview round not found');
+      }
+      
+      application.interviewRounds.splice(roundIndex, 1);
+      
+      return {
+        status: 'success',
+        message: 'Interview round deleted successfully'
+      };
+    }
   }
 
   // User Management
   async updateProfile(profileData: { fullName?: string; preferences?: any }) {
-    const response = await fetch(`${API_BASE_URL}/users/profile`, {
-      method: 'PUT',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(profileData),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/users/profile`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(profileData),
+      });
+      return this.handleResponse(response);
+    } else {
+      const mockUser = localStorage.getItem('mockUser');
+      if (mockUser) {
+        const user = JSON.parse(mockUser);
+        const updatedUser = { ...user, ...profileData };
+        localStorage.setItem('mockUser', JSON.stringify(updatedUser));
+      }
+      
+      return {
+        status: 'success',
+        message: 'Profile updated successfully'
+      };
+    }
   }
 
   async upgradeToPro(paymentData: { paymentMethod: string; paymentId: string }) {
-    const response = await fetch(`${API_BASE_URL}/users/upgrade-pro`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(paymentData),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/users/upgrade-pro`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(paymentData),
+      });
+      return this.handleResponse(response);
+    } else {
+      return {
+        status: 'success',
+        message: 'Upgraded to Pro successfully'
+      };
+    }
   }
 
   async cancelPro() {
-    const response = await fetch(`${API_BASE_URL}/users/cancel-pro`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/users/cancel-pro`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      return {
+        status: 'success',
+        message: 'Pro subscription cancelled'
+      };
+    }
   }
 
   async getUserAnalytics() {
-    const response = await fetch(`${API_BASE_URL}/users/analytics`, {
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/users/analytics`, {
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      return {
+        status: 'success',
+        data: {
+          totalApplications: mockApplications.length,
+          applicationsThisMonth: mockApplications.filter(app => {
+            const appDate = new Date(app.createdAt);
+            const now = new Date();
+            return appDate.getMonth() === now.getMonth() && appDate.getFullYear() === now.getFullYear();
+          }).length
+        }
+      };
+    }
   }
 
   async deleteAccount(password: string) {
-    const response = await fetch(`${API_BASE_URL}/users/account`, {
-      method: 'DELETE',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify({ password }),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/users/account`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify({ password }),
+      });
+      return this.handleResponse(response);
+    } else {
+      localStorage.removeItem('token');
+      localStorage.removeItem('mockUser');
+      mockApplications = [];
+      setMockApplications(mockApplications);
+      
+      return {
+        status: 'success',
+        message: 'Account deleted successfully'
+      };
+    }
   }
 
   // File Uploads
   async uploadResume(file: File) {
-    const formData = new FormData();
-    formData.append('resume', file);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const formData = new FormData();
+      formData.append('resume', file);
 
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/upload/resume`, {
-      method: 'POST',
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: formData,
-    });
-    return this.handleResponse(response);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/upload/resume`, {
+        method: 'POST',
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
+      });
+      return this.handleResponse(response);
+    } else {
+      console.log('Mock upload resume:', file.name);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return {
+        status: 'success',
+        data: {
+          filename: `mock-resume-${Date.now()}.pdf`,
+          url: 'https://mock-storage.com/resume.pdf'
+        }
+      };
+    }
   }
 
   async uploadDocuments(files: File[]) {
-    const formData = new FormData();
-    files.forEach((file) => {
-      formData.append('documents', file);
-    });
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const formData = new FormData();
+      files.forEach((file) => {
+        formData.append('documents', file);
+      });
 
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${API_BASE_URL}/upload/documents`, {
-      method: 'POST',
-      headers: {
-        ...(token && { Authorization: `Bearer ${token}` }),
-      },
-      body: formData,
-    });
-    return this.handleResponse(response);
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_BASE_URL}/upload/documents`, {
+        method: 'POST',
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        body: formData,
+      });
+      return this.handleResponse(response);
+    } else {
+      console.log('Mock upload documents:', files.map(f => f.name));
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return {
+        status: 'success',
+        data: {
+          files: files.map((file, index) => ({
+            filename: `mock-doc-${Date.now()}-${index}.pdf`,
+            url: `https://mock-storage.com/doc-${index}.pdf`
+          }))
+        }
+      };
+    }
   }
 
   async deleteFile(filename: string) {
-    const response = await fetch(`${API_BASE_URL}/upload/${filename}`, {
-      method: 'DELETE',
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    const backendAvailable = await this.isBackendAvailable();
+    
+    if (backendAvailable) {
+      const response = await fetch(`${API_BASE_URL}/upload/${filename}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+      return this.handleResponse(response);
+    } else {
+      return {
+        status: 'success',
+        message: 'File deleted successfully'
+      };
+    }
   }
 
   // Health Check
@@ -258,5 +589,4 @@ class ApiService {
   }
 }
 
-export const apiService = new ApiService();
-export default apiService; 
+export const apiService = new ApiService(); 

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
-import { Calendar, Mail, User, FileText, Link, AlertCircle, Clock } from 'lucide-react'
+import { Calendar, Mail, User, FileText, Link, AlertCircle, Clock, Upload, X } from 'lucide-react'
 import { useApplications } from '@/context/ApplicationContext'
 import { ApplicationFormData } from '@/types'
 import { applicationFormSchema } from '@/utils/validators'
@@ -46,41 +46,140 @@ const buttonVariants = {
 export default function ApplicationForm() {
   const { addApplication } = useApplications()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [resumeFile, setResumeFile] = useState<File>()
+  const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [additionalFiles, setAdditionalFiles] = useState<File[]>([])
+  const [uploadProgress, setUploadProgress] = useState(0)
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors }
   } = useForm<ApplicationFormData>({
-    resolver: zodResolver(applicationFormSchema)
+    resolver: zodResolver(applicationFormSchema),
+    defaultValues: {
+      workMode: 'Not Specified',
+      status: 'Applied',
+      outcome: 'Active',
+      source: 'LinkedIn',
+      mailReceived: false,
+      salary: '',
+      appliedDate: new Date().toISOString().split('T')[0] // Today's date
+    }
   })
 
+  // Set default values for Select components
+  useEffect(() => {
+    setValue('workMode', 'Not Specified')
+    setValue('status', 'Applied')
+    setValue('outcome', 'Active')
+    setValue('source', 'LinkedIn')
+    setValue('mailReceived', false)
+    setValue('salary', '')
+    setValue('appliedDate', new Date().toISOString().split('T')[0])
+  }, [setValue])
+
+  const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
+      if (!allowedTypes.includes(file.type)) {
+        alert('Please upload a PDF, DOC, or DOCX file for resume')
+        return
+      }
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Resume file size should be less than 5MB')
+        return
+      }
+      setResumeFile(file)
+    }
+  }
+
+  const handleAdditionalFilesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || [])
+    const validFiles = files.filter(file => {
+      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png']
+      if (!allowedTypes.includes(file.type)) {
+        alert(`${file.name} is not a supported file type`)
+        return false
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} is too large. File size should be less than 5MB`)
+        return false
+      }
+      return true
+    })
+    setAdditionalFiles(prev => [...prev, ...validFiles])
+  }
+
+  const removeAdditionalFile = (index: number) => {
+    setAdditionalFiles(prev => prev.filter((_, i) => i !== index))
+  }
+
   const onSubmit = async (data: ApplicationFormData) => {
+    console.log('🚀 ApplicationForm: onSubmit called with data:', data)
+    console.log('📁 Resume file:', resumeFile)
+    console.log('📄 Additional files:', additionalFiles)
+    console.log('🔍 Form validation errors:', errors)
+    
     try {
+      console.log('⏳ Setting isSubmitting to true')
       setIsSubmitting(true)
+      setUploadProgress(0)
+      
       const formData: ApplicationFormData = {
         ...data,
-        resumeFile,
+        resumeFile: resumeFile || undefined,
         additionalDocuments: additionalFiles,
         mailReceived: data.mailReceived || false
       }
-      console.log('Submitting application data:', formData) // Debug log
-      await addApplication(formData)
-      // Success - reset form
+      
+      console.log('📋 Prepared formData:', formData)
+      console.log('🔧 addApplication function:', addApplication)
+      console.log('🔧 addApplication type:', typeof addApplication)
+      
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval)
+            return 90
+          }
+          return prev + 10
+        })
+      }, 100)
+      
+      console.log('📞 Calling addApplication...')
+      const result = await addApplication(formData)
+      console.log('✅ addApplication result:', result)
+      
+      setUploadProgress(100)
+      
+      // Reset form
+      console.log('🔄 Resetting form...')
       reset()
-      setResumeFile(undefined)
+      setResumeFile(null)
       setAdditionalFiles([])
-      // Show success message (you can add a toast notification here)
-      console.log('Application submitted successfully!')
+      setUploadProgress(0)
+      
+      console.log('🎉 Application submitted successfully!')
+      alert('✅ Application added successfully!')
     } catch (error) {
-      console.error('Error submitting application:', error)
-      // Show error message to user (you can add a toast notification here)
+      console.error('❌ Error submitting application:', error)
+      console.error('❌ Error details:', {
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        error: error
+      })
       alert('Failed to submit application. Please try again.')
     } finally {
+      console.log('🏁 Setting isSubmitting to false')
       setIsSubmitting(false)
+      setUploadProgress(0)
     }
   }
 
@@ -101,7 +200,10 @@ export default function ApplicationForm() {
           </CardDescription>
         </CardHeader>
         <CardContent className="bg-white dark:bg-gray-800 p-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit, (errors) => {
+            console.log('❌ Form validation errors:', errors)
+            console.log('❌ Form is valid:', Object.keys(errors).length === 0)
+          })} className="space-y-4">
             {/* Company Information */}
             <motion.div variants={fieldVariants} className="space-y-2">
               <Label htmlFor="companyName" className="text-gray-700 dark:text-gray-200 font-medium">Company Name *</Label>
@@ -156,9 +258,12 @@ export default function ApplicationForm() {
             {/* Application Details */}
             <motion.div variants={fieldVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="workMode" className="text-gray-700 dark:text-gray-200 font-medium">Work Mode</Label>
-                <Select {...register('workMode')}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                <Label htmlFor="workMode" className="text-gray-700 dark:text-gray-200 font-medium">Work Mode *</Label>
+                <Select 
+                  value={watch('workMode')} 
+                  onValueChange={(value) => setValue('workMode', value as any)}
+                >
+                  <SelectTrigger className={`${errors.workMode ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}>
                     <SelectValue placeholder="Select work mode" className="text-gray-500 dark:text-gray-400" />
                   </SelectTrigger>
                   <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
@@ -169,16 +274,36 @@ export default function ApplicationForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.workMode && (
+                  <motion.p 
+                    className="text-sm text-red-500 flex items-center gap-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.workMode.message}
+                  </motion.p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="salary" className="text-gray-700 dark:text-gray-200 font-medium">Salary (₹)</Label>
+                <Label htmlFor="salary" className="text-gray-700 dark:text-gray-200 font-medium">Salary (₹) *</Label>
                 <Input
                   id="salary"
                   {...register('salary')}
                   placeholder="Enter salary"
-                  className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+                  className={`${errors.salary ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
                 />
+                {errors.salary && (
+                  <motion.p 
+                    className="text-sm text-red-500 flex items-center gap-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.salary.message}
+                  </motion.p>
+                )}
               </div>
             </motion.div>
 
@@ -217,8 +342,11 @@ export default function ApplicationForm() {
             <motion.div variants={fieldVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="status" className="text-gray-700 dark:text-gray-200 font-medium">Status *</Label>
-                <Select {...register('status')}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                <Select 
+                  value={watch('status')} 
+                  onValueChange={(value) => setValue('status', value as any)}
+                >
+                  <SelectTrigger className={`${errors.status ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}>
                     <SelectValue placeholder="Select status" className="text-gray-500 dark:text-gray-400" />
                   </SelectTrigger>
                   <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
@@ -229,12 +357,25 @@ export default function ApplicationForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.status && (
+                  <motion.p 
+                    className="text-sm text-red-500 flex items-center gap-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.status.message}
+                  </motion.p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="outcome" className="text-gray-700 dark:text-gray-200 font-medium">Outcome</Label>
-                <Select {...register('outcome')}>
-                  <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                <Label htmlFor="outcome" className="text-gray-700 dark:text-gray-200 font-medium">Outcome *</Label>
+                <Select 
+                  value={watch('outcome')} 
+                  onValueChange={(value) => setValue('outcome', value as any)}
+                >
+                  <SelectTrigger className={`${errors.outcome ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}>
                     <SelectValue placeholder="Select outcome" className="text-gray-500 dark:text-gray-400" />
                   </SelectTrigger>
                   <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
@@ -245,6 +386,16 @@ export default function ApplicationForm() {
                     ))}
                   </SelectContent>
                 </Select>
+                {errors.outcome && (
+                  <motion.p 
+                    className="text-sm text-red-500 flex items-center gap-1"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <AlertCircle className="h-3 w-3" />
+                    {errors.outcome.message}
+                  </motion.p>
+                )}
               </div>
             </motion.div>
 
@@ -272,9 +423,12 @@ export default function ApplicationForm() {
 
             {/* Additional Information */}
             <motion.div variants={fieldVariants} className="space-y-2">
-              <Label htmlFor="source" className="text-gray-700 dark:text-gray-200 font-medium">Source</Label>
-              <Select {...register('source')}>
-                <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+              <Label htmlFor="source" className="text-gray-700 dark:text-gray-200 font-medium">Source *</Label>
+              <Select 
+                value={watch('source')} 
+                onValueChange={(value) => setValue('source', value as any)}
+              >
+                <SelectTrigger className={`${errors.source ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}>
                   <SelectValue placeholder="Select source" className="text-gray-500 dark:text-gray-400" />
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
@@ -285,6 +439,40 @@ export default function ApplicationForm() {
                   ))}
                 </SelectContent>
               </Select>
+              {errors.source && (
+                <motion.p 
+                  className="text-sm text-red-500 flex items-center gap-1"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.source.message}
+                </motion.p>
+              )}
+            </motion.div>
+
+            <motion.div variants={fieldVariants} className="space-y-2">
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="mailReceived"
+                  {...register('mailReceived')}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <Label htmlFor="mailReceived" className="text-gray-700 dark:text-gray-200 font-medium">
+                  Mail Received
+                </Label>
+              </div>
+              {errors.mailReceived && (
+                <motion.p 
+                  className="text-sm text-red-500 flex items-center gap-1"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <AlertCircle className="h-3 w-3" />
+                  {errors.mailReceived.message}
+                </motion.p>
+              )}
             </motion.div>
 
             <motion.div variants={fieldVariants} className="space-y-2">
@@ -303,6 +491,106 @@ export default function ApplicationForm() {
               </Select>
             </motion.div>
 
+            {/* File Upload Section */}
+            <motion.div variants={fieldVariants} className="space-y-4 border-t pt-4">
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                  <Upload className="h-4 w-4" />
+                  Resume Upload
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+                  <input
+                    type="file"
+                    id="resume"
+                    accept=".pdf,.doc,.docx"
+                    onChange={handleResumeUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="resume" className="cursor-pointer">
+                    <div className="text-center">
+                      {resumeFile ? (
+                        <div className="flex items-center justify-between bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                          <div className="flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
+                            <span className="text-sm text-green-700 dark:text-green-300">{resumeFile.name}</span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setResumeFile(null)}
+                            className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Click to upload resume (PDF, DOC, DOCX)
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-500">
+                            Max size: 5MB
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                  <Upload className="h-4 w-4" />
+                  Additional Documents (Optional)
+                </Label>
+                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
+                  <input
+                    type="file"
+                    id="additionalFiles"
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    multiple
+                    onChange={handleAdditionalFilesUpload}
+                    className="hidden"
+                  />
+                  <label htmlFor="additionalFiles" className="cursor-pointer">
+                    <div className="text-center">
+                      <Upload className="h-8 w-8 mx-auto text-gray-400" />
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Click to upload additional documents
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                        Max 5 files, 5MB each
+                      </p>
+                    </div>
+                  </label>
+                </div>
+                
+                {additionalFiles.length > 0 && (
+                  <div className="space-y-2">
+                    {additionalFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                          <span className="text-sm text-blue-700 dark:text-blue-300">{file.name}</span>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeAdditionalFile(index)}
+                          className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
             <motion.div variants={fieldVariants} className="space-y-2">
               <Label htmlFor="notes" className="text-gray-700 dark:text-gray-200 font-medium">Notes</Label>
               <Textarea
@@ -313,6 +601,26 @@ export default function ApplicationForm() {
                 className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 resize-none"
               />
             </motion.div>
+
+            {/* Upload Progress */}
+            {uploadProgress > 0 && (
+              <motion.div 
+                variants={fieldVariants}
+                className="space-y-2"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${uploadProgress}%` }}
+                  ></div>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 text-center">
+                  {uploadProgress < 100 ? 'Uploading...' : 'Upload complete!'}
+                </p>
+              </motion.div>
+            )}
 
             {/* Submit Button */}
             <motion.div 
@@ -327,6 +635,7 @@ export default function ApplicationForm() {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
+                  onClick={() => console.log('🔘 Add Application button clicked!')}
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   {isSubmitting ? (
