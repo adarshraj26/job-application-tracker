@@ -67,6 +67,7 @@ export interface JobApplication {
   resumeVersion?: string
   coverLetter?: string
   portfolioLink?: string
+  jobDescriptionUrl?: string
   additionalDocuments?: File[]
   rejectionReason?: RejectionReason
   rejectionNotes?: string
@@ -98,6 +99,7 @@ export interface ApplicationFormData {
   resumeVersion?: string
   coverLetter?: string
   portfolioLink?: string
+  jobDescriptionUrl?: string
   additionalDocuments?: File[]
   rejectionReason?: RejectionReason
   rejectionNotes?: string

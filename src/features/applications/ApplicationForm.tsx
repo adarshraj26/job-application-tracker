@@ -17,8 +17,7 @@ import {
   WORK_MODE_OPTIONS, 
   STATUS_OPTIONS, 
   OUTCOME_OPTIONS, 
-  SOURCE_OPTIONS,
-  PRIORITY_OPTIONS
+  SOURCE_OPTIONS
 } from '@/utils/constants'
 
 const formVariants = {
@@ -47,7 +46,6 @@ export default function ApplicationForm() {
   const { addApplication } = useApplications()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
-  const [additionalFiles, setAdditionalFiles] = useState<File[]>([])
   const [uploadProgress, setUploadProgress] = useState(0)
 
   const {
@@ -99,31 +97,11 @@ export default function ApplicationForm() {
     }
   }
 
-  const handleAdditionalFilesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || [])
-    const validFiles = files.filter(file => {
-      const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png']
-      if (!allowedTypes.includes(file.type)) {
-        alert(`${file.name} is not a supported file type`)
-        return false
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name} is too large. File size should be less than 5MB`)
-        return false
-      }
-      return true
-    })
-    setAdditionalFiles(prev => [...prev, ...validFiles])
-  }
 
-  const removeAdditionalFile = (index: number) => {
-    setAdditionalFiles(prev => prev.filter((_, i) => i !== index))
-  }
 
   const onSubmit = async (data: ApplicationFormData) => {
     console.log('🚀 ApplicationForm: onSubmit called with data:', data)
     console.log('📁 Resume file:', resumeFile)
-    console.log('📄 Additional files:', additionalFiles)
     console.log('🔍 Form validation errors:', errors)
     
     try {
@@ -134,7 +112,6 @@ export default function ApplicationForm() {
       const formData: ApplicationFormData = {
         ...data,
         resumeFile: resumeFile || undefined,
-        additionalDocuments: additionalFiles,
         mailReceived: data.mailReceived || false
       }
       
@@ -163,7 +140,6 @@ export default function ApplicationForm() {
       console.log('🔄 Resetting form...')
       reset()
       setResumeFile(null)
-      setAdditionalFiles([])
       setUploadProgress(0)
       
       console.log('🎉 Application submitted successfully!')
@@ -399,6 +375,84 @@ export default function ApplicationForm() {
               </div>
             </motion.div>
 
+            {/* Rejection Reason - Only show when outcome is "Rejected" */}
+            {watch('outcome') === 'Rejected' && (
+              <motion.div 
+                variants={fieldVariants} 
+                className="space-y-2"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Label htmlFor="rejectionReason" className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4" />
+                  Rejection Reason
+                </Label>
+                <Select 
+                  value={watch('rejectionReason')} 
+                  onValueChange={(value) => setValue('rejectionReason', value as any)}
+                >
+                  <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
+                    <SelectValue placeholder="Select rejection reason" className="text-gray-500 dark:text-gray-400" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+                    <SelectItem value="Not a good fit" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Not a good fit
+                    </SelectItem>
+                    <SelectItem value="Overqualified" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Overqualified
+                    </SelectItem>
+                    <SelectItem value="Underqualified" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Underqualified
+                    </SelectItem>
+                    <SelectItem value="Salary mismatch" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Salary mismatch
+                    </SelectItem>
+                    <SelectItem value="Location constraint" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Location constraint
+                    </SelectItem>
+                    <SelectItem value="Timing issues" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Timing issues
+                    </SelectItem>
+                    <SelectItem value="Company restructuring" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Company restructuring
+                    </SelectItem>
+                    <SelectItem value="Position filled" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Position filled
+                    </SelectItem>
+                    <SelectItem value="No response" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      No response
+                    </SelectItem>
+                    <SelectItem value="Other" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
+                      Other
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                {/* Rejection Notes - Only show when rejection reason is selected */}
+                {watch('rejectionReason') && (
+                  <motion.div 
+                    variants={fieldVariants} 
+                    className="space-y-2"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Label htmlFor="rejectionNotes" className="text-gray-700 dark:text-gray-200 font-medium">Rejection Notes</Label>
+                    <Textarea
+                      id="rejectionNotes"
+                      {...register('rejectionNotes')}
+                      placeholder="Add any additional notes about the rejection..."
+                      rows={3}
+                      className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 resize-none"
+                    />
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+
             {/* Contact Information */}
             <motion.div variants={fieldVariants} className="space-y-2">
               <Label htmlFor="contactPerson" className="text-gray-700 dark:text-gray-200 font-medium">Contact Person</Label>
@@ -417,6 +471,35 @@ export default function ApplicationForm() {
                 type="email"
                 {...register('contactEmail')}
                 placeholder="Enter contact email"
+                className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+              />
+            </motion.div>
+
+            {/* Portfolio and Job Details */}
+            <motion.div variants={fieldVariants} className="space-y-2">
+              <Label htmlFor="portfolioLink" className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                <Link className="h-4 w-4" />
+                Portfolio Link
+              </Label>
+              <Input
+                id="portfolioLink"
+                type="url"
+                {...register('portfolioLink')}
+                placeholder="https://your-portfolio.com"
+                className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+              />
+            </motion.div>
+
+            <motion.div variants={fieldVariants} className="space-y-2">
+              <Label htmlFor="jobDescriptionUrl" className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Job Description URL
+              </Label>
+              <Input
+                id="jobDescriptionUrl"
+                type="url"
+                {...register('jobDescriptionUrl')}
+                placeholder="https://company.com/careers/job-id"
                 className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
               />
             </motion.div>
@@ -475,21 +558,7 @@ export default function ApplicationForm() {
               )}
             </motion.div>
 
-            <motion.div variants={fieldVariants} className="space-y-2">
-              <Label htmlFor="priority" className="text-gray-700 dark:text-gray-200 font-medium">Priority</Label>
-              <Select {...register('priority')}>
-                <SelectTrigger className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400">
-                  <SelectValue placeholder="Select priority" className="text-gray-500 dark:text-gray-400" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-                  {PRIORITY_OPTIONS.map((priority) => (
-                    <SelectItem key={priority.value} value={priority.value} className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-600">
-                      {priority.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </motion.div>
+
 
             {/* File Upload Section */}
             <motion.div variants={fieldVariants} className="space-y-4 border-t pt-4">
@@ -541,53 +610,17 @@ export default function ApplicationForm() {
               </div>
 
               <div className="space-y-2">
-                <Label className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
-                  <Upload className="h-4 w-4" />
-                  Additional Documents (Optional)
+                <Label htmlFor="coverLetter" className="text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Cover Letter (Optional)
                 </Label>
-                <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 hover:border-blue-500 dark:hover:border-blue-400 transition-colors">
-                  <input
-                    type="file"
-                    id="additionalFiles"
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    multiple
-                    onChange={handleAdditionalFilesUpload}
-                    className="hidden"
-                  />
-                  <label htmlFor="additionalFiles" className="cursor-pointer">
-                    <div className="text-center">
-                      <Upload className="h-8 w-8 mx-auto text-gray-400" />
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        Click to upload additional documents
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">
-                        Max 5 files, 5MB each
-                      </p>
-                    </div>
-                  </label>
-                </div>
-                
-                {additionalFiles.length > 0 && (
-                  <div className="space-y-2">
-                    {additionalFiles.map((file, index) => (
-                      <div key={index} className="flex items-center justify-between bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                          <span className="text-sm text-blue-700 dark:text-blue-300">{file.name}</span>
-                        </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeAdditionalFile(index)}
-                          className="text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <Textarea
+                  id="coverLetter"
+                  {...register('coverLetter')}
+                  placeholder="Write your cover letter here..."
+                  rows={6}
+                  className="border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 resize-none"
+                />
               </div>
             </motion.div>
 
