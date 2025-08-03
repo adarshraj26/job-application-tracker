@@ -12,6 +12,7 @@ import DashboardPage from './pages/DashboardPage';
 import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import LandingPage from './pages/LandingPage';
 
 // Components
 import Layout from './components/common/Layout';
@@ -26,12 +27,13 @@ function App() {
           <ApplicationProvider>
             <Router>
               <Routes>
-                {/* Auth Routes */}
+                {/* Public Routes */}
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 
                 {/* Protected Routes */}
-                <Route path="/" element={
+                <Route path="/home" element={
                   <ProtectedRoute>
                     <Layout>
                       <HomePage />

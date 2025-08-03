@@ -13,7 +13,7 @@ export default function Header() {
   const { user, logout } = useAuth()
 
   const navigation = [
-    { name: 'Home', href: '/', icon: Home },
+    { name: 'Home', href: '/home', icon: Home },
     { name: 'Applications', href: '/applications', icon: FileText },
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
   ]
@@ -23,7 +23,7 @@ export default function Header() {
       <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-white/20 dark:border-gray-700/20 shadow-lg">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center space-x-3 group">
+          <Link to="/home" className="flex items-center space-x-3 group">
             <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
               <Briefcase className="h-6 w-6 text-white" />
             </div>
