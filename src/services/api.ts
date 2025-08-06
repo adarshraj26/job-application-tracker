@@ -54,7 +54,36 @@ class ApiService {
       throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
     
-    console.log('🟡 ApiService: Returning successful response data');
+    // Transform MongoDB _id to id for frontend compatibility
+    if (data.data) {
+      if (data.data.applications) {
+        console.log('🟡 ApiService: Transforming applications array, count:', data.data.applications.length);
+        data.data.applications = data.data.applications.map((app: any) => {
+          console.log('🟡 ApiService: Transforming app with _id:', app._id, 'to id:', app._id);
+          return {
+            ...app,
+            id: app._id,
+            appliedDate: new Date(app.appliedDate),
+            nextInterviewDate: app.nextInterviewDate ? new Date(app.nextInterviewDate) : undefined,
+            createdAt: new Date(app.createdAt),
+            updatedAt: new Date(app.updatedAt)
+          };
+        });
+      } else if (data.data.application) {
+        const app = data.data.application;
+        console.log('🟡 ApiService: Transforming single application with _id:', app._id, 'to id:', app._id);
+        data.data.application = {
+          ...app,
+          id: app._id,
+          appliedDate: new Date(app.appliedDate),
+          nextInterviewDate: app.nextInterviewDate ? new Date(app.nextInterviewDate) : undefined,
+          createdAt: new Date(app.createdAt),
+          updatedAt: new Date(app.updatedAt)
+        };
+      }
+    }
+    
+    console.log('🟡 ApiService: Returning transformed response data');
     return data;
   }
 

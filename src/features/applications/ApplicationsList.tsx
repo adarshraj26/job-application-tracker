@@ -7,16 +7,19 @@ import ApplicationTable from './ApplicationTable'
 import MobileApplicationCard from '@/components/common/MobileApplicationCard'
 import ApplicationModal from './ApplicationModal'
 import { Table, LayoutGrid } from 'lucide-react'
+import { StatusBadge, ConfirmationModal } from '@/components/common'
 
 interface ApplicationsListProps {
   applications?: JobApplication[]
 }
 
 export default function ApplicationsList({ applications: propApplications }: ApplicationsListProps) {
-  const { applications: contextApplications } = useApplications()
+  const { applications: contextApplications, deleteApplication } = useApplications()
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table')
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null)
   
   // Use prop applications if provided, otherwise use context applications
   const displayApplications = propApplications || contextApplications || []
@@ -34,22 +37,41 @@ export default function ApplicationsList({ applications: propApplications }: App
   }
 
   const handleEdit = (application: JobApplication) => {
+    console.log('✏️ ApplicationsList: Edit button clicked for application:', application)
+    console.log('✏️ ApplicationsList: Application ID:', application.id)
+    if (!application.id) {
+      console.error('❌ ApplicationsList: Edit failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
     try {
       setSelectedApplication(application)
       setIsModalOpen(true)
     } catch (error) {
-      console.error('Error in handleEdit:', error)
+      console.error('❌ ApplicationsList: Error in handleEdit:', error)
     }
   }
 
   const handleDelete = async (id: string) => {
+    console.log('🗑️ ApplicationsList: Delete button clicked for application ID:', id)
+    if (!id) {
+      console.error('❌ ApplicationsList: Delete failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
+    setApplicationToDelete(id)
+    setDeleteModalOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!applicationToDelete) return
+    
     try {
-      if (confirm('Are you sure you want to delete this application?')) {
-        // This would need to be implemented with the context
-        console.log('Delete application:', id)
-      }
+      console.log('🗑️ ApplicationsList: Confirmed delete, calling deleteApplication with ID:', applicationToDelete)
+      await deleteApplication(applicationToDelete)
+      console.log('✅ ApplicationsList: Delete successful for ID:', applicationToDelete)
     } catch (error) {
-      console.error('Error in handleDelete:', error)
+      console.error('❌ ApplicationsList: Delete failed for ID:', applicationToDelete, error)
     }
   }
 
@@ -121,6 +143,17 @@ export default function ApplicationsList({ applications: propApplications }: App
             setIsModalOpen(false)
             setSelectedApplication(null)
           }}
+        />
+
+        <ConfirmationModal
+          isOpen={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          onConfirm={confirmDelete}
+          title="Delete Application"
+          message="Are you sure you want to delete this application? This action cannot be undone."
+          confirmText="Delete"
+          cancelText="Cancel"
+          type="delete"
         />
       </>
     )

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
+import OAuthButtons from '@/components/common/OAuthButtons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -34,7 +35,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema)
   })
 
-  const { login } = useAuth()
+  const { login, loginWithGoogle, loginWithGitHub } = useAuth()
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
@@ -54,12 +55,11 @@ export default function LoginPage() {
     setIsOAuthLoading(true)
     setOauthError(null)
     try {
-      // For now, we'll show a message that OAuth is coming soon
-      // In a real implementation, you would redirect to Google OAuth
-      setOauthError('Google OAuth integration is coming soon! Please use email login for now.')
+      await loginWithGoogle()
+      navigate('/applications')
     } catch (error) {
       console.error('Google login failed:', error)
-      setOauthError('Failed to sign in with Google. Please try again.')
+      setOauthError(error instanceof Error ? error.message : 'Failed to sign in with Google. Please try again.')
     } finally {
       setIsOAuthLoading(false)
     }
@@ -69,12 +69,11 @@ export default function LoginPage() {
     setIsOAuthLoading(true)
     setOauthError(null)
     try {
-      // For now, we'll show a message that OAuth is coming soon
-      // In a real implementation, you would redirect to GitHub OAuth
-      setOauthError('GitHub OAuth integration is coming soon! Please use email login for now.')
+      await loginWithGitHub()
+      navigate('/applications')
     } catch (error) {
       console.error('GitHub login failed:', error)
-      setOauthError('Failed to sign in with GitHub. Please try again.')
+      setOauthError(error instanceof Error ? error.message : 'Failed to sign in with GitHub. Please try again.')
     } finally {
       setIsOAuthLoading(false)
     }
@@ -278,37 +277,13 @@ export default function LoginPage() {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2 hover:bg-gray-50 transition-colors"
-                onClick={handleGoogleLogin}
-                disabled={isOAuthLoading}
-              >
-                {isOAuthLoading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                ) : (
-                  <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    G
-                  </div>
-                )}
-                {isOAuthLoading ? 'Loading...' : 'Google'}
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2 hover:bg-gray-50 transition-colors"
-                onClick={handleGitHubLogin}
-                disabled={isOAuthLoading}
-              >
-                {isOAuthLoading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                ) : (
-                  <div className="w-5 h-5 bg-gray-800 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    G
-                  </div>
-                )}
-                {isOAuthLoading ? 'Loading...' : 'GitHub'}
-              </Button>
+            <motion.div variants={itemVariants}>
+              <OAuthButtons
+                onGoogleClick={handleGoogleLogin}
+                onGitHubClick={handleGitHubLogin}
+                isLoading={isOAuthLoading}
+                variant="login"
+              />
             </motion.div>
           </CardContent>
         </Card>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
+import OAuthButtons from '@/components/common/OAuthButtons'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -51,7 +52,7 @@ export default function SignupPage() {
     special: /[^A-Za-z0-9]/.test(watchedPassword || '')
   }
 
-  const { signup } = useAuth()
+  const { signup, loginWithGoogle, loginWithGitHub } = useAuth()
 
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true)
@@ -59,6 +60,7 @@ export default function SignupPage() {
     try {
       await signup(data.fullName, data.email, data.password)
       setStep(2)
+      // Navigate to applications page after showing success message
       setTimeout(() => navigate('/applications'), 2000)
     } catch (error) {
       console.error('Signup failed:', error)
@@ -72,12 +74,11 @@ export default function SignupPage() {
     setIsOAuthLoading(true)
     setOauthError(null)
     try {
-      // For now, we'll show a message that OAuth is coming soon
-      // In a real implementation, you would redirect to Google OAuth
-      setOauthError('Google OAuth integration is coming soon! Please use email signup for now.')
+      await loginWithGoogle()
+      navigate('/applications')
     } catch (error) {
       console.error('Google signup failed:', error)
-      setOauthError('Failed to sign up with Google. Please try again.')
+      setOauthError(error instanceof Error ? error.message : 'Failed to sign up with Google. Please try again.')
     } finally {
       setIsOAuthLoading(false)
     }
@@ -87,12 +88,11 @@ export default function SignupPage() {
     setIsOAuthLoading(true)
     setOauthError(null)
     try {
-      // For now, we'll show a message that OAuth is coming soon
-      // In a real implementation, you would redirect to GitHub OAuth
-      setOauthError('GitHub OAuth integration is coming soon! Please use email signup for now.')
+      await loginWithGitHub()
+      navigate('/applications')
     } catch (error) {
       console.error('GitHub signup failed:', error)
-      setOauthError('Failed to sign up with GitHub. Please try again.')
+      setOauthError(error instanceof Error ? error.message : 'Failed to sign up with GitHub. Please try again.')
     } finally {
       setIsOAuthLoading(false)
     }
@@ -449,37 +449,13 @@ export default function SignupPage() {
               </div>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2 hover:bg-gray-50 transition-colors"
-                onClick={handleGoogleSignup}
-                disabled={isOAuthLoading}
-              >
-                {isOAuthLoading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                ) : (
-                  <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    G
-                  </div>
-                )}
-                {isOAuthLoading ? 'Loading...' : 'Google'}
-              </Button>
-              <Button 
-                variant="outline" 
-                className="flex items-center gap-2 hover:bg-gray-50 transition-colors"
-                onClick={handleGitHubSignup}
-                disabled={isOAuthLoading}
-              >
-                {isOAuthLoading ? (
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
-                ) : (
-                  <div className="w-5 h-5 bg-gray-800 rounded-full flex items-center justify-center text-white text-xs font-bold">
-                    G
-                  </div>
-                )}
-                {isOAuthLoading ? 'Loading...' : 'GitHub'}
-              </Button>
+            <motion.div variants={itemVariants}>
+              <OAuthButtons
+                onGoogleClick={handleGoogleSignup}
+                onGitHubClick={handleGitHubSignup}
+                isLoading={isOAuthLoading}
+                variant="signup"
+              />
             </motion.div>
           </CardContent>
         </Card>

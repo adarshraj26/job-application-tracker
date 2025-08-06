@@ -3,7 +3,7 @@ import { Edit, Trash2, ExternalLink, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
-import { StatusBadge } from '@/components/common'
+import { StatusBadge, ConfirmationModal } from '@/components/common'
 import { useApplications } from '@/context/ApplicationContext'
 import { JobApplication } from '@/types'
 import { formatDate, formatCurrency } from '@/utils/formatters'
@@ -17,15 +17,41 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
   const { deleteApplication } = useApplications()
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null)
 
   const handleEdit = (application: JobApplication) => {
+    console.log('✏️ Edit button clicked for application:', application)
+    console.log('✏️ Application ID:', application.id)
+    if (!application.id) {
+      console.error('❌ Edit failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
     setSelectedApplication(application)
     setIsModalOpen(true)
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm('Are you sure you want to delete this application?')) {
-      await deleteApplication(id)
+    console.log('🗑️ Delete button clicked for application ID:', id)
+    if (!id) {
+      console.error('❌ Delete failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
+    setApplicationToDelete(id)
+    setDeleteModalOpen(true)
+  }
+
+  const confirmDelete = async () => {
+    if (!applicationToDelete) return
+    
+    try {
+      console.log('🗑️ Confirmed delete, calling deleteApplication with ID:', applicationToDelete)
+      await deleteApplication(applicationToDelete)
+      console.log('✅ Delete successful for ID:', applicationToDelete)
+    } catch (error) {
+      console.error('❌ Delete failed for ID:', applicationToDelete, error)
     }
   }
 
@@ -47,10 +73,10 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>S.No.</TableHead>
               <TableHead className="hidden sm:table-cell">Company</TableHead>
               <TableHead className="hidden md:table-cell">Position</TableHead>
               <TableHead className="hidden lg:table-cell">Location</TableHead>
-              <TableHead className="hidden xl:table-cell">Priority</TableHead>
               <TableHead className="hidden xl:table-cell">Contact</TableHead>
               <TableHead className="hidden lg:table-cell">Work Mode</TableHead>
               <TableHead className="hidden xl:table-cell">Salary</TableHead>
@@ -64,19 +90,14 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
           <TableBody>
             {applications.map((application, index) => (
               <TableRow key={application.id || `app-${index}`}>
+                <TableCell className="font-medium text-center">
+                  {index + 1}
+                </TableCell>
                 <TableCell className="font-medium hidden sm:table-cell">
                   {application.companyName}
                 </TableCell>
                 <TableCell className="hidden md:table-cell">{application.position}</TableCell>
                 <TableCell className="hidden lg:table-cell">{application.location}</TableCell>
-                <TableCell className="hidden xl:table-cell">
-                  <Badge 
-                    variant={application.priority === 'High' ? 'destructive' : 
-                           application.priority === 'Medium' ? 'default' : 'secondary'}
-                  >
-                    {application.priority || 'Medium'}
-                  </Badge>
-                </TableCell>
                 <TableCell className="hidden xl:table-cell">
                   {application.contactPerson ? (
                     <div className="text-sm">
@@ -165,6 +186,17 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
           setIsModalOpen(false)
           setSelectedApplication(null)
         }}
+      />
+
+      <ConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Application"
+        message="Are you sure you want to delete this application? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="delete"
       />
     </>
   )

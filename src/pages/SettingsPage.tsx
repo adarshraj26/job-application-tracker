@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Download, Upload, Trash2, Database, Shield, AlertTriangle, CheckCircle } from 'lucide-react'
+import { Download, Upload, Trash2, Database, Shield, AlertTriangle, CheckCircle, Play } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { BackupService } from '@/services/backupService'
 import { useAuth } from '@/context/AuthContext'
 import { useApplications } from '@/context/ApplicationContext'
+import { useTour } from '@/context/TourContext'
 
 export default function SettingsPage() {
   const [isExporting, setIsExporting] = useState(false)
@@ -15,6 +16,7 @@ export default function SettingsPage() {
   
   const { user, logout } = useAuth()
   const { applications } = useApplications()
+  const { setShowWelcomeTour, resetTour } = useTour()
   const backupService = BackupService.getInstance()
 
   const storageInfo = backupService.getStorageInfo()
@@ -65,6 +67,11 @@ export default function SettingsPage() {
     }
   }
 
+  const handleReplayTour = () => {
+    resetTour()
+    setShowWelcomeTour(true)
+  }
+
   const formatBytes = (bytes: number): string => {
     if (bytes === 0) return '0 Bytes'
     const k = 1024
@@ -91,6 +98,7 @@ export default function SettingsPage() {
   }
 
   return (
+    <div data-tour="settings">
     <div className="space-y-6">
       {/* Header */}
       <motion.div variants={itemVariants} className="text-center space-y-4">
@@ -123,9 +131,19 @@ export default function SettingsPage() {
                 <p className="text-white">{user?.email || 'Not set'}</p>
               </div>
             </div>
-            <Button variant="outline" onClick={logout} className="w-full">
-              Sign Out
-            </Button>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Button variant="outline" onClick={logout} className="w-full">
+                Sign Out
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleReplayTour}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white border-purple-500"
+              >
+                <Play className="h-4 w-4 mr-2" />
+                Replay Tour
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -285,6 +303,7 @@ export default function SettingsPage() {
           </motion.div>
         )}
       </motion.div>
+    </div>
     </div>
   )
 } 

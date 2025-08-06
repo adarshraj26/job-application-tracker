@@ -29,7 +29,13 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
   })
 
   const addInterviewRound = () => {
-    if (!newRound.roundName || !newRound.date) return
+    console.log('🔄 InterviewRounds: addInterviewRound called')
+    console.log('🔄 InterviewRounds: newRound data:', newRound)
+    
+    if (!newRound.roundName || !newRound.date) {
+      console.log('❌ InterviewRounds: Missing required fields')
+      return
+    }
 
     const round: InterviewRound = {
       id: Date.now().toString(),
@@ -43,11 +49,16 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
       nextSteps: newRound.nextSteps || undefined
     }
 
+    console.log('🔄 InterviewRounds: Created round:', round)
+
     const updatedApplication = {
       ...application,
       interviewRounds: [...(application.interviewRounds || []), round]
     }
 
+    console.log('🔄 InterviewRounds: Updated application:', updatedApplication)
+    console.log('🔄 InterviewRounds: Calling onUpdate...')
+    
     onUpdate(updatedApplication)
     
     // Reset form
@@ -62,6 +73,8 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
       nextSteps: ''
     })
     setIsAddingRound(false)
+    
+    console.log('✅ InterviewRounds: Form reset and closed')
   }
 
   const updateRoundStatus = (roundId: string, status: string) => {
@@ -102,7 +115,7 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
     }
   }
 
-  return (
+    return (
     <Card className="border-blue-200 bg-gradient-to-br from-blue-50 to-indigo-50">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
@@ -112,8 +125,11 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
               Track your interview progress for {application.companyName}
             </CardDescription>
           </div>
-          <Button
-            onClick={() => setIsAddingRound(!isAddingRound)}
+                     <Button
+            onClick={() => {
+              console.log('🔄 InterviewRounds: Add Round button clicked!')
+              setIsAddingRound(!isAddingRound)
+            }}
             className="bg-blue-600 hover:bg-blue-700 text-white"
             size="sm"
           >
@@ -217,14 +233,20 @@ export default function InterviewRounds({ application, onUpdate }: InterviewRoun
                   />
                 </div>
               </div>
-              <div className="flex gap-2 mt-4">
-                <Button onClick={addInterviewRound} className="bg-blue-600 hover:bg-blue-700">
-                  Add Round
-                </Button>
-                <Button variant="outline" onClick={() => setIsAddingRound(false)}>
-                  Cancel
-                </Button>
-              </div>
+                                             <div className="flex gap-2 mt-4">
+                  <Button 
+                    onClick={() => {
+                      console.log('🔄 InterviewRounds: Form Add Round button clicked!')
+                      addInterviewRound()
+                    }} 
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Add Round
+                  </Button>
+                  <Button variant="outline" onClick={() => setIsAddingRound(false)}>
+                    Cancel
+                  </Button>
+                </div>
             </CardContent>
           </Card>
         )}

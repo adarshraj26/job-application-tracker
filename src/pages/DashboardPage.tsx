@@ -13,7 +13,7 @@ export default function DashboardPage() {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white">
           Dashboard
         </h1>
-        <p className="text-lg text-muted-foreground mt-2 max-w-2xl lg:max-w-none">
+        <p className="text-lg text-gray-600 dark:text-gray-300 mt-2 max-w-2xl lg:max-w-none">
           Get insights into your job search progress and performance with detailed analytics.
         </p>
       </div>
@@ -26,6 +26,7 @@ export default function DashboardPage() {
       >
         <AdvancedAnalytics applications={applications} />
       </ProFeatureWrapper>
+      <div data-tour="analytics" className="hidden" />
     </div>
   )
 }

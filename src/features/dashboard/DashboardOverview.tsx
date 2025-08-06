@@ -70,25 +70,25 @@ export default function DashboardOverview() {
       {overviewCards.map((card, index) => {
         const IconComponent = card.icon
         const cardColors = [
-          'bg-gradient-to-br from-blue-50 to-blue-100',
-          'bg-gradient-to-br from-emerald-50 to-emerald-100',
-          'bg-gradient-to-br from-orange-50 to-orange-100',
-          'bg-gradient-to-br from-green-50 to-green-100',
-          'bg-gradient-to-br from-purple-50 to-purple-100',
-          'bg-gradient-to-br from-red-50 to-red-100',
-          'bg-gradient-to-br from-gray-50 to-gray-100',
-          'bg-gradient-to-br from-teal-50 to-teal-100'
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90',
+          'bg-white/90 dark:bg-gray-800/90'
         ]
         const iconBgColors = [
-          'bg-blue-200/50', 'bg-emerald-200/50', 'bg-orange-200/50', 'bg-green-200/50',
-          'bg-purple-200/50', 'bg-red-200/50', 'bg-gray-200/50', 'bg-teal-200/50'
+          'bg-blue-200/50 dark:bg-blue-800/50', 'bg-emerald-200/50 dark:bg-emerald-800/50', 'bg-orange-200/50 dark:bg-orange-800/50', 'bg-green-200/50 dark:bg-green-800/50',
+          'bg-purple-200/50 dark:bg-purple-800/50', 'bg-red-200/50 dark:bg-red-800/50', 'bg-gray-200/50 dark:bg-gray-700/50', 'bg-teal-200/50 dark:bg-teal-800/50'
         ]
         const textColors = [
-          'text-blue-700', 'text-emerald-700', 'text-orange-700', 'text-green-700',
-          'text-purple-700', 'text-red-700', 'text-gray-700', 'text-teal-700'
+          'text-blue-700 dark:text-blue-300', 'text-emerald-700 dark:text-emerald-300', 'text-orange-700 dark:text-orange-300', 'text-green-700 dark:text-green-300',
+          'text-purple-700 dark:text-purple-300', 'text-red-700 dark:text-red-300', 'text-gray-700 dark:text-gray-300', 'text-teal-700 dark:text-teal-300'
         ]
         return (
-          <Card key={card.title} className={`group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg ${cardColors[index]}`}>
+          <Card key={card.title} className={`group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-lg ${cardColors[index]}`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className={`text-sm font-medium ${textColors[index]}`}>
                 {card.title}

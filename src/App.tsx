@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ApplicationProvider } from './context/ApplicationContext';
+import { TourProvider } from './context/TourContext';
 import { Toaster } from './components/ui/toaster';
 
 // Pages
@@ -25,45 +26,47 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <ApplicationProvider>
-            <Router>
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                
-                {/* Protected Routes */}
-                <Route path="/home" element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <HomePage />
-                    </Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/applications" element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <ApplicationsPage />
-                    </Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <DashboardPage />
-                    </Layout>
-                  </ProtectedRoute>
-                } />
-                <Route path="/settings" element={
-                  <ProtectedRoute>
-                    <Layout>
-                      <SettingsPage />
-                    </Layout>
-                  </ProtectedRoute>
-                } />
-              </Routes>
-            </Router>
-            <Toaster />
+            <TourProvider>
+              <Router>
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                  
+                  {/* Protected Routes */}
+                  <Route path="/home" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <HomePage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/applications" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <ApplicationsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <DashboardPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/settings" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <SettingsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                </Routes>
+              </Router>
+              <Toaster />
+            </TourProvider>
           </ApplicationProvider>
         </AuthProvider>
       </ThemeProvider>

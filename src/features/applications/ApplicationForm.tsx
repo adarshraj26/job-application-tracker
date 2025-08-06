@@ -20,6 +20,7 @@ import {
   SOURCE_OPTIONS
 } from '@/utils/constants'
 
+
 const formVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
@@ -42,11 +43,14 @@ const buttonVariants = {
   tap: { scale: 0.98 }
 }
 
+
+
 export default function ApplicationForm() {
   const { addApplication } = useApplications()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
   const [uploadProgress, setUploadProgress] = useState(0)
+
 
   const {
     register,
@@ -143,7 +147,9 @@ export default function ApplicationForm() {
       setUploadProgress(0)
       
       console.log('🎉 Application submitted successfully!')
-      alert('✅ Application added successfully!')
+      
+      
+
     } catch (error) {
       console.error('❌ Error submitting application:', error)
       console.error('❌ Error details:', {
@@ -670,6 +676,7 @@ export default function ApplicationForm() {
                   disabled={isSubmitting}
                   onClick={() => console.log('🔘 Add Application button clicked!')}
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+  
                 >
                   {isSubmitting ? (
                     <motion.div
@@ -686,10 +693,14 @@ export default function ApplicationForm() {
                   )}
                 </Button>
               </motion.div>
+              
+
             </motion.div>
           </form>
         </CardContent>
       </Card>
+      
+
     </motion.div>
   )
 }

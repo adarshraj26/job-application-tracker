@@ -168,6 +168,7 @@ export default function AdvancedSearch({ applications, onFilterChange }: Advance
             value={filters.searchTerm}
             onChange={(e) => setFilters(prev => ({ ...prev, searchTerm: e.target.value }))}
             className="pl-10"
+            data-tour="search"
           />
         </div>
 

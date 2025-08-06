@@ -24,13 +24,13 @@ export default function MobileApplicationCard({
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <CardTitle className="text-lg font-semibold text-gray-900 mb-1">
+            <CardTitle className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
               {application.companyName}
             </CardTitle>
-            <CardDescription className="text-sm text-gray-600 mb-2">
+            <CardDescription className="text-sm text-gray-600 dark:text-gray-300 mb-2">
               {application.position}
             </CardDescription>
-            <div className="flex items-center gap-2 text-xs text-gray-500">
+            <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
               <MapPin className="h-3 w-3" />
               <span>{application.location}</span>
               <span>•</span>
@@ -50,15 +50,15 @@ export default function MobileApplicationCard({
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4 text-gray-400" />
             <div>
-              <div className="font-medium text-gray-900">Applied</div>
-              <div className="text-gray-600">{formatDate(application.appliedDate)}</div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">Applied</div>
+              <div className="text-gray-600 dark:text-gray-300">{formatDate(application.appliedDate)}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <DollarSign className="h-4 w-4 text-gray-400" />
             <div>
-              <div className="font-medium text-gray-900">Salary</div>
-              <div className="text-gray-600">{formatCurrency(application.salary)}</div>
+              <div className="font-medium text-gray-900 dark:text-gray-100">Salary</div>
+              <div className="text-gray-600 dark:text-gray-300">{formatCurrency(application.salary)}</div>
             </div>
           </div>
         </div>
@@ -73,10 +73,10 @@ export default function MobileApplicationCard({
             {application.priority || 'Medium'} Priority
           </Badge>
           {application.contactPerson && (
-            <div className="text-xs text-gray-600">
+            <div className="text-xs text-gray-600 dark:text-gray-300">
               <div className="font-medium">{application.contactPerson}</div>
               {application.contactEmail && (
-                <div className="text-gray-500">{application.contactEmail}</div>
+                <div className="text-gray-500 dark:text-gray-400">{application.contactEmail}</div>
               )}
             </div>
           )}
@@ -84,8 +84,8 @@ export default function MobileApplicationCard({
 
         {/* Interview Rounds Summary */}
         {application.interviewRounds && application.interviewRounds.length > 0 && (
-          <div className="pt-2 border-t border-gray-100">
-            <div className="text-xs font-medium text-gray-700 mb-2">Interview Rounds</div>
+          <div className="pt-2 border-t border-gray-100 dark:border-gray-700">
+            <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Interview Rounds</div>
             <div className="flex flex-wrap gap-1">
               {application.interviewRounds.map((round, index) => (
                 <Badge 
@@ -101,7 +101,7 @@ export default function MobileApplicationCard({
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-700">
           <div className="flex items-center gap-2">
             <Button
               size="sm"

@@ -87,10 +87,10 @@ export default function DashboardCharts() {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg bg-gradient-to-br from-indigo-50 to-indigo-100">
+      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-lg bg-white/90 dark:bg-gray-800/90">
         <CardHeader>
-          <CardTitle className="text-indigo-900">Application Status</CardTitle>
-          <CardDescription className="text-indigo-700">
+          <CardTitle className="text-indigo-900 dark:text-indigo-300">Application Status</CardTitle>
+          <CardDescription className="text-indigo-700 dark:text-indigo-400">
             Breakdown by current status
           </CardDescription>
         </CardHeader>
@@ -99,10 +99,10 @@ export default function DashboardCharts() {
         </CardContent>
       </Card>
 
-      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg bg-gradient-to-br from-emerald-50 to-emerald-100">
+      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-lg bg-white/90 dark:bg-gray-800/90">
         <CardHeader>
-          <CardTitle className="text-emerald-900">Application Outcomes</CardTitle>
-          <CardDescription className="text-emerald-700">
+          <CardTitle className="text-emerald-900 dark:text-emerald-300">Application Outcomes</CardTitle>
+          <CardDescription className="text-emerald-700 dark:text-emerald-400">
             Results of your applications
           </CardDescription>
         </CardHeader>
@@ -111,10 +111,10 @@ export default function DashboardCharts() {
         </CardContent>
       </Card>
 
-      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 shadow-lg bg-gradient-to-br from-rose-50 to-rose-100">
+      <Card className="group hover:shadow-xl hover:scale-105 transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-lg bg-white/90 dark:bg-gray-800/90">
         <CardHeader>
-          <CardTitle className="text-rose-900">Application Sources</CardTitle>
-          <CardDescription className="text-rose-700">
+          <CardTitle className="text-rose-900 dark:text-rose-300">Application Sources</CardTitle>
+          <CardDescription className="text-rose-700 dark:text-rose-400">
             Where you found these jobs
           </CardDescription>
         </CardHeader>

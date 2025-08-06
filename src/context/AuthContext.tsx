@@ -23,6 +23,8 @@ interface AuthContextType {
   isAuthenticated: boolean
   login: (email: string, password: string) => Promise<void>
   signup: (fullName: string, email: string, password: string) => Promise<void>
+  loginWithGoogle: () => Promise<void>
+  loginWithGitHub: () => Promise<void>
   logout: () => void
   isLoading: boolean
   updateUser: (userData: Partial<User>) => void
@@ -46,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.log('Get current user response:', response)
           
           if (response.status === 'success' && response.data) {
-            const userData = response.data.user || response.data
+            const userData = response.data as any
             setUser({
               id: userData.id || 'mock-user-id',
               email: userData.email || 'mock@example.com',
@@ -129,6 +131,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             notifications: { email: true, browser: true }
           }
         })
+        
+        // Reset tour for new users
+        localStorage.removeItem('hasSeenWelcomeTour')
       } else {
         throw new Error(response.message || 'Signup failed')
       }
@@ -151,11 +156,53 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const loginWithGoogle = async () => {
+    setIsLoading(true)
+    try {
+      // In a real implementation, this would redirect to Google OAuth
+      // For now, we'll simulate the OAuth flow
+      console.log('Initiating Google OAuth...')
+      
+      // Simulate OAuth redirect
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.REACT_APP_GOOGLE_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/google/callback&response_type=code&scope=email profile`
+      
+      // For demo purposes, we'll show a message instead of redirecting
+      throw new Error('Google OAuth integration is coming soon! Please use email login for now.')
+    } catch (error) {
+      console.error('Google OAuth error:', error)
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const loginWithGitHub = async () => {
+    setIsLoading(true)
+    try {
+      // In a real implementation, this would redirect to GitHub OAuth
+      // For now, we'll simulate the OAuth flow
+      console.log('Initiating GitHub OAuth...')
+      
+      // Simulate OAuth redirect
+      const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_GITHUB_CLIENT_ID}&redirect_uri=${window.location.origin}/auth/github/callback&scope=user:email`
+      
+      // For demo purposes, we'll show a message instead of redirecting
+      throw new Error('GitHub OAuth integration is coming soon! Please use email login for now.')
+    } catch (error) {
+      console.error('GitHub OAuth error:', error)
+      throw error
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   const value: AuthContextType = {
     user,
     isAuthenticated: !!user,
     login,
     signup,
+    loginWithGoogle,
+    loginWithGitHub,
     logout,
     isLoading,
     updateUser,
