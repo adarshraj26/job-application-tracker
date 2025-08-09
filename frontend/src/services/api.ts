@@ -822,6 +822,47 @@ class ApiService {
       return { success: false, message: `Connection test failed: ${error instanceof Error ? error.message : 'Unknown error'}` };
     }
   }
+
+  // Test multiple backend URLs to find which one works
+  async testMultipleBackendUrls(): Promise<{ url: string; working: boolean; response?: any }[]> {
+    const possibleUrls = [
+      'https://jobtracker-backend.onrender.com',
+      'https://jobtracker-backend-6r0y.onrender.com',
+      'https://application-manager-backend.onrender.com'
+    ];
+    
+    const results = [];
+    
+    for (const url of possibleUrls) {
+      try {
+        console.log(`🟡 ApiService: Testing backend URL: ${url}`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(`${url}/api/health`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          const data = await response.json();
+          results.push({ url, working: true, response: data });
+          console.log(`🟡 ApiService: ✅ ${url} is working!`);
+        } else {
+          results.push({ url, working: false });
+          console.log(`🟡 ApiService: ❌ ${url} returned status ${response.status}`);
+        }
+      } catch (error) {
+        results.push({ url, working: false });
+        console.log(`🟡 ApiService: ❌ ${url} failed:`, error);
+      }
+    }
+    
+    return results;
+  }
 }
 
 export const apiService = new ApiService(); 
