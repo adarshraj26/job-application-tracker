@@ -30,39 +30,23 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// CORS configuration
-const corsOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:5173', 'http://localhost:5174'];
-
-// CORS middleware configuration
-const corsOptions = {
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Allow all origins if CORS_ORIGIN is set to "*"
-    if (process.env.CORS_ORIGIN === '*' || corsOrigins.includes('*')) {
-      return callback(null, true);
-    }
-    
-    // Check if origin is in allowed list
-    if (corsOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      console.log('Allowed origins:', corsOrigins);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+// CORS configuration - Allow all origins for development
+app.use(cors({
+  origin: true, // Allow all origins
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-};
-
-app.use(cors(corsOptions));
+}));
 
 // Handle preflight OPTIONS requests explicitly
-app.options('*', cors(corsOptions));
+app.options('*', cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 200
+}));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
