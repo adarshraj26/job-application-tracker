@@ -278,9 +278,10 @@ export default function ApplicationsPage() {
         </motion.div>
       </motion.div>
     )
-  } catch (err) {
-    console.error('ApplicationsPage error:', err)
-    setPageError(err instanceof Error ? err.message : 'Unknown error occurred')
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+    console.error('ApplicationsPage error:', errorMessage)
+    setPageError(errorMessage)
     return (
       <motion.div 
         className="space-y-8 lg:space-y-12"
