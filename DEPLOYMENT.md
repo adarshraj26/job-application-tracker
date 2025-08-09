@@ -36,6 +36,7 @@ Add these environment variables in Render:
 NODE_ENV=production
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/jobtracker?retryWrites=true&w=majority
 JWT_SECRET=your-super-secret-jwt-key-here
+JWT_EXPIRE=30d
 CORS_ORIGIN=https://your-frontend-domain.vercel.app
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
