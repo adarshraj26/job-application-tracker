@@ -15,7 +15,7 @@ services:
       - key: JWT_EXPIRE
         value: 30d
       - key: CORS_ORIGIN
-        value: https://jobtracker-frontend.vercel.app,https://jobtracker-frontend-git-main-adarshraj26.vercel.app,https://job-application-tracker.vercel.app,https://job-application-tracker-git-main-adarshraj26.vercel.app,https://application-manager-7cmd9ipw0-ad26082608-gmailcoms-projects.vercel.app,https://application-manager-3gafzzzio-ad26082608-gmailcoms-projects.vercel.app,https://application-manager-brown.vercel.app,http://localhost:5173,http://localhost:3000
+        value: "*"
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
