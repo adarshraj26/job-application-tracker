@@ -1,9 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-
 // Debug logging
 console.log('🟡 API Service: VITE_API_URL from env:', import.meta.env.VITE_API_URL);
-console.log('🟡 API Service: Final API_BASE_URL:', API_BASE_URL);
 console.log('🟡 API Service: import.meta.env:', import.meta.env);
+
+// Use hardcoded URL as fallback to ensure it works
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://jobtracker-backend.onrender.com';
+
+console.log('🟡 API Service: Final API_BASE_URL:', API_BASE_URL);
 
 // Mock data for development - persisted in localStorage
 const getMockApplications = (): any[] => {
@@ -216,13 +218,22 @@ class ApiService {
 
   async login(credentials: { email: string; password: string }) {
     console.log('🟡 ApiService: Using REAL backend for login');
+    console.log('🟡 ApiService: Login URL:', `${API_BASE_URL}/auth/login`);
+    console.log('🟡 ApiService: Login credentials:', { email: credentials.email, password: '***' });
     
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(credentials),
-    });
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(credentials),
+      });
+      console.log('🟡 ApiService: Login response status:', response.status);
+      console.log('🟡 ApiService: Login response ok:', response.ok);
+      return this.handleResponse(response);
+    } catch (error) {
+      console.error('🟡 ApiService: Login fetch error:', error);
+      throw error;
+    }
   }
 
   async getCurrentUser() {
