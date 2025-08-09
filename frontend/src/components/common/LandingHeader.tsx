@@ -1,38 +1,126 @@
 import { Link } from 'react-router-dom'
-import { Briefcase } from 'lucide-react'
+import { Briefcase, Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import ThemeToggle from './ThemeToggle'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export default function LandingHeader() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen)
+  }
+
+  const closeMenu = () => {
+    setIsMenuOpen(false)
+  }
+
   return (
     <header className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-md border border-white/20 dark:border-gray-700/20 shadow-xl rounded-3xl mx-4 sticky top-4 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
-              <Link to="/" className="flex items-center space-x-3 group">
-                <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <Briefcase className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <span className="text-xl font-bold text-gray-800 dark:text-white">
-                    JobTracker
-                  </span>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">Career Management</p>
-                </div>
-              </Link>
-
-              <div className="flex items-center space-x-4">
-                <ThemeToggle />
-                <Button variant="ghost" asChild>
-                  <Link to="/login">Login</Link>
-                </Button>
-                <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
-                  <Link to="/signup">Get Started</Link>
-                </Button>
+        <div className="px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-3 group" onClick={closeMenu}>
+              <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                <Briefcase className="h-6 w-6 text-white" />
               </div>
+              <div>
+                <span className="text-xl font-bold text-gray-800 dark:text-white">
+                  JobTracker
+                </span>
+                <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">Career Management</p>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-4">
+              <ThemeToggle />
+              <Button variant="ghost" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Link to="/signup">Get Started</Link>
+              </Button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center space-x-2">
+              <ThemeToggle />
+              <button
+                onClick={toggleMenu}
+                className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200"
+                aria-label="Toggle menu"
+              >
+                <motion.div
+                  animate={isMenuOpen ? "open" : "closed"}
+                  className="relative w-6 h-6"
+                >
+                  <motion.span
+                    className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                    style={{ top: "4px" }}
+                    variants={{
+                      closed: { rotate: 0, y: 0 },
+                      open: { rotate: 45, y: 6 }
+                    }}
+                  />
+                  <motion.span
+                    className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                    style={{ top: "10px" }}
+                    variants={{
+                      closed: { opacity: 1 },
+                      open: { opacity: 0 }
+                    }}
+                  />
+                  <motion.span
+                    className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                    style={{ top: "16px" }}
+                    variants={{
+                      closed: { rotate: 0, y: 0 },
+                      open: { rotate: -45, y: -6 }
+                    }}
+                  />
+                </motion.div>
+              </button>
             </div>
           </div>
+
+          {/* Mobile Navigation Menu */}
+          <AnimatePresence>
+            {isMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="md:hidden overflow-hidden"
+              >
+                <div className="py-4 space-y-3 border-t border-white/20 dark:border-gray-700/20 mt-4">
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <Button variant="ghost" asChild className="w-full justify-start text-lg">
+                      <Link to="/login" onClick={closeMenu}>Login</Link>
+                    </Button>
+                  </motion.div>
+                  <motion.div
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <Button asChild className="w-full justify-start text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                      <Link to="/signup" onClick={closeMenu}>Get Started</Link>
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </header>
+      </div>
+    </header>
   )
 } 
