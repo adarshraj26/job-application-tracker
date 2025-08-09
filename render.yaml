@@ -21,4 +21,20 @@ services:
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 100
       - key: PORT
-        value: 5000 
+        value: 5000
+      # Optional: Email Service (uncomment and set values if needed)
+      # - key: SMTP_HOST
+      #   value: smtp.gmail.com
+      # - key: SMTP_PORT
+      #   value: 587
+      # - key: SMTP_USER
+      #   value: your-email@gmail.com
+      # - key: SMTP_PASS
+      #   value: your-app-password
+      # Optional: Cloud Storage (uncomment and set values if needed)
+      # - key: CLOUD_NAME
+      #   value: your-cloudinary-name
+      # - key: CLOUD_API_KEY
+      #   value: your-cloudinary-api-key
+      # - key: CLOUD_API_SECRET
+      #   value: your-cloudinary-api-secret 
