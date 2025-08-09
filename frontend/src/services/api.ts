@@ -3,7 +3,7 @@ console.log('🟡 API Service: VITE_API_URL from env:', import.meta.env.VITE_API
 console.log('🟡 API Service: import.meta.env:', import.meta.env);
 
 // Use hardcoded URL as fallback to ensure it works
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://jobtracker-backend.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://jobtracker-backend-6r0y.onrender.com';
 
 console.log('🟡 API Service: Final API_BASE_URL:', API_BASE_URL);
 

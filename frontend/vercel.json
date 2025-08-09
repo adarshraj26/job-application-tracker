@@ -5,11 +5,11 @@
   "installCommand": "npm install",
   "devCommand": "npm run dev",
   "env": {
-    "VITE_API_URL": "https://jobtracker-backend.onrender.com"
+    "VITE_API_URL": "https://jobtracker-backend-6r0y.onrender.com"
   },
   "build": {
     "env": {
-      "VITE_API_URL": "https://jobtracker-backend.onrender.com"
+      "VITE_API_URL": "https://jobtracker-backend-6r0y.onrender.com"
     }
   },
   "rewrites": [
