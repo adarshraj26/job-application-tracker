@@ -279,7 +279,7 @@ export default function ApplicationsPage() {
       </motion.div>
     )
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+    const errorMessage = err instanceof Error ? err.message : String(err)
     console.error('ApplicationsPage error:', errorMessage)
     setPageError(errorMessage)
     return (
@@ -535,7 +535,7 @@ export default function ApplicationsPage() {
             </motion.div>
           )
         } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+          const errorMessage = err instanceof Error ? err.message : String(err)
           console.error('ApplicationsPage error:', errorMessage)
           setPageError(errorMessage)
           return (
