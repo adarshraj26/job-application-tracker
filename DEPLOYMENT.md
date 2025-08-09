@@ -40,7 +40,7 @@ JWT_EXPIRE=30d
 CORS_ORIGIN=https://your-frontend-domain.vercel.app
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
-PORT=10000
+PORT=5000
 ```
 
 ### 4. Deploy
