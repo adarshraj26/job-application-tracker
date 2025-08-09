@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, User, Briefcase, ArrowRight, Sparkles, AlertCircle } from 'lucide-react'
@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '@/context/AuthContext'
+import { useTheme } from '@/context/ThemeContext'
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email'),
@@ -25,11 +26,14 @@ export default function LoginPage() {
   const [isOAuthLoading, setIsOAuthLoading] = useState(false)
   const [oauthError, setOauthError] = useState<string | null>(null)
   const [isSignup, setIsSignup] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const navigate = useNavigate()
+  const { theme } = useTheme()
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema)
@@ -37,12 +41,43 @@ export default function LoginPage() {
 
   const { login, loginWithGoogle, loginWithGitHub } = useAuth()
 
+  // Load saved credentials on component mount
+  useEffect(() => {
+    const savedCredentials = localStorage.getItem('jobTracker_rememberMe')
+    if (savedCredentials) {
+      try {
+        const { email, password, remember } = JSON.parse(savedCredentials)
+        if (remember) {
+          setValue('email', email)
+          setValue('password', password)
+          setRememberMe(true)
+        }
+      } catch (error) {
+        console.error('Error loading saved credentials:', error)
+        localStorage.removeItem('jobTracker_rememberMe')
+      }
+    }
+  }, [setValue])
+
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true)
     setOauthError(null)
     try {
       await login(data.email, data.password)
-      navigate('/applications')
+      
+      // Save credentials if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('jobTracker_rememberMe', JSON.stringify({
+          email: data.email,
+          password: data.password,
+          remember: true
+        }))
+      } else {
+        // Clear saved credentials if remember me is unchecked
+        localStorage.removeItem('jobTracker_rememberMe')
+      }
+      
+      navigate('/home')
     } catch (error) {
       console.error('Login failed:', error)
       // You could add toast notification here
@@ -56,7 +91,7 @@ export default function LoginPage() {
     setOauthError(null)
     try {
       await loginWithGoogle()
-      navigate('/applications')
+      navigate('/home')
     } catch (error) {
       console.error('Google login failed:', error)
       setOauthError(error instanceof Error ? error.message : 'Failed to sign in with Google. Please try again.')
@@ -70,7 +105,7 @@ export default function LoginPage() {
     setOauthError(null)
     try {
       await loginWithGitHub()
-      navigate('/applications')
+      navigate('/home')
     } catch (error) {
       console.error('GitHub login failed:', error)
       setOauthError(error instanceof Error ? error.message : 'Failed to sign in with GitHub. Please try again.')
@@ -106,19 +141,19 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-20 w-32 h-32 bg-blue-200 rounded-full opacity-20"
+          className="absolute top-20 left-20 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full opacity-20"
           animate={floatingAnimation}
         />
         <motion.div
-          className="absolute top-40 right-20 w-24 h-24 bg-purple-200 rounded-full opacity-20"
+          className="absolute top-40 right-20 w-24 h-24 bg-purple-200 dark:bg-purple-800 rounded-full opacity-20"
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1 } }}
         />
         <motion.div
-          className="absolute bottom-20 left-1/4 w-20 h-20 bg-pink-200 rounded-full opacity-20"
+          className="absolute bottom-20 left-1/4 w-20 h-20 bg-pink-200 dark:bg-pink-800 rounded-full opacity-20"
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 2 } }}
         />
       </div>
@@ -129,7 +164,7 @@ export default function LoginPage() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl">
+        <Card className="backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border-0 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <motion.div variants={itemVariants} className="flex justify-center">
               <div className="relative">
@@ -150,7 +185,7 @@ export default function LoginPage() {
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 Welcome Back!
               </CardTitle>
-              <CardDescription className="text-gray-600 mt-2">
+              <CardDescription className="text-gray-600 dark:text-gray-300 mt-2">
                 Sign in to continue your job search journey
               </CardDescription>
             </motion.div>
@@ -162,23 +197,23 @@ export default function LoginPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg"
               >
-                <AlertCircle className="h-4 w-4 text-yellow-600" />
-                <p className="text-sm text-yellow-800">{oauthError}</p>
+                <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">{oauthError}</p>
               </motion.div>
             )}
 
             <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    className="pl-10 pr-4 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-4 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('email')}
                   />
                 </div>
@@ -194,20 +229,20 @@ export default function LoginPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
-                    className="pl-10 pr-12 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-12 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('password')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -225,10 +260,15 @@ export default function LoginPage() {
 
               <div className="flex items-center justify-between">
                 <label className="flex items-center space-x-2">
-                  <input type="checkbox" className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                  <span className="text-sm text-gray-600">Remember me</span>
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700"
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Remember me</span>
                 </label>
-                <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                <Link to="/forgot-password" className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                   Forgot password?
                 </Link>
               </div>
@@ -260,9 +300,9 @@ export default function LoginPage() {
             </motion.form>
 
             <motion.div variants={itemVariants} className="text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Don't have an account?{' '}
-                <Link to="/signup" className="text-blue-600 hover:text-blue-700 font-semibold">
+                <Link to="/signup" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold">
                   Sign up
                 </Link>
               </p>
@@ -270,10 +310,10 @@ export default function LoginPage() {
 
             <motion.div variants={itemVariants} className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with</span>
               </div>
             </motion.div>
 

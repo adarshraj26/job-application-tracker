@@ -94,10 +94,11 @@
 2. **Install dependencies**
    ```bash
    # Install frontend dependencies
+   cd frontend
    npm install
    
    # Install backend dependencies
-   cd backend
+   cd ../backend
    npm install
    cd ..
    ```
@@ -142,22 +143,28 @@
 
 ```
 job-application-tracker/
-├── src/                    # Frontend source code
-│   ├── components/         # Reusable UI components
-│   ├── features/          # Feature-based components
-│   ├── pages/             # Page components
-│   ├── services/          # API services
-│   ├── hooks/             # Custom React hooks
-│   ├── context/           # React context providers
-│   ├── types/             # TypeScript type definitions
-│   └── utils/             # Utility functions
-├── backend/               # Backend source code
+├── frontend/              # Frontend application
+│   ├── src/               # React source code
+│   │   ├── components/    # Reusable UI components
+│   │   ├── features/      # Feature-based components
+│   │   ├── pages/         # Page components
+│   │   ├── services/      # API services
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── context/       # React context providers
+│   │   ├── types/         # TypeScript type definitions
+│   │   └── utils/         # Utility functions
+│   ├── public/            # Static assets
+│   ├── dist/              # Build output
+│   ├── package.json       # Frontend dependencies
+│   └── vite.config.ts     # Vite configuration
+├── backend/               # Backend application
 │   ├── config/            # Database configuration
 │   ├── middleware/        # Express middleware
 │   ├── models/            # MongoDB models
 │   ├── routes/            # API routes
-│   └── utils/             # Backend utilities
-├── public/                # Static assets
+│   ├── utils/             # Backend utilities
+│   └── package.json       # Backend dependencies
+├── api/                   # API routes (if any)
 └── docs/                  # Documentation
 ```
 
@@ -199,6 +206,7 @@ JWT_SECRET=your-secret-key
 
 ### Frontend Deployment (Vercel/Netlify)
 ```bash
+cd frontend
 npm run build
 # Deploy the dist folder
 ```

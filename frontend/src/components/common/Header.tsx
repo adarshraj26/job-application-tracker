@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Briefcase, BarChart3, FileText, Home, Crown, User, LogOut, Settings } from 'lucide-react'
+import { Briefcase, BarChart3, FileText, Home, Crown, User, LogOut, Settings, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 import ProUpgrade from './ProUpgrade'
@@ -16,6 +16,7 @@ export default function Header() {
     { name: 'Home', href: '/home', icon: Home },
     { name: 'Applications', href: '/applications', icon: FileText },
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
+    { name: 'Features', href: '/features', icon: Sparkles },
   ]
 
   return (

@@ -80,6 +80,30 @@ class ApiService {
           createdAt: new Date(app.createdAt),
           updatedAt: new Date(app.updatedAt)
         };
+      } else if (data.data.connections) {
+        console.log('🟡 ApiService: Transforming connections array, count:', data.data.connections.length);
+        data.data.connections = data.data.connections.map((conn: any) => {
+          console.log('🟡 ApiService: Transforming connection with _id:', conn._id, 'to id:', conn._id);
+          return {
+            ...conn,
+            id: conn._id,
+            dateAdded: new Date(conn.dateAdded),
+            lastContact: new Date(conn.lastContact),
+            createdAt: new Date(conn.createdAt),
+            updatedAt: new Date(conn.updatedAt)
+          };
+        });
+      } else if (data.data.connection) {
+        const conn = data.data.connection;
+        console.log('🟡 ApiService: Transforming single connection with _id:', conn._id, 'to id:', conn._id);
+        data.data.connection = {
+          ...conn,
+          id: conn._id,
+          dateAdded: new Date(conn.dateAdded),
+          lastContact: new Date(conn.lastContact),
+          createdAt: new Date(conn.createdAt),
+          updatedAt: new Date(conn.updatedAt)
+        };
       }
     }
     
@@ -615,6 +639,126 @@ class ApiService {
   async healthCheck() {
     const response = await fetch(`${API_BASE_URL}/health`);
     return this.handleResponse(response);
+  }
+
+  // Connection methods
+  async getConnections(): Promise<ApiResponse<{ connections: any[] }>> {
+    console.log('🟡 ApiService: getConnections called');
+    try {
+      const response = await fetch(`${API_BASE_URL}/connections`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      return await this.handleResponse<{ connections: any[] }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: getConnections error:', error);
+      throw error;
+    }
+  }
+
+  async createConnection(connectionData: {
+    name: string;
+    company: string;
+    position: string;
+    email?: string;
+    linkedin?: string;
+    status?: 'active' | 'pending' | 'inactive';
+    notes?: string;
+    tags?: string[];
+  }): Promise<ApiResponse<{ connection: any }>> {
+    console.log('🟡 ApiService: createConnection called with data:', connectionData);
+    try {
+      const response = await fetch(`${API_BASE_URL}/connections`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(connectionData),
+      });
+
+      return await this.handleResponse<{ connection: any }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: createConnection error:', error);
+      throw error;
+    }
+  }
+
+  async updateConnection(id: string, updates: {
+    name?: string;
+    company?: string;
+    position?: string;
+    email?: string;
+    linkedin?: string;
+    status?: 'active' | 'pending' | 'inactive';
+    notes?: string;
+    tags?: string[];
+    lastContact?: Date;
+  }): Promise<ApiResponse<{ connection: any }>> {
+    console.log('🟡 ApiService: updateConnection called for id:', id, 'with updates:', updates);
+    try {
+      const response = await fetch(`${API_BASE_URL}/connections/${id}`, {
+        method: 'PUT',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(updates),
+      });
+
+      return await this.handleResponse<{ connection: any }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: updateConnection error:', error);
+      throw error;
+    }
+  }
+
+  async deleteConnection(id: string): Promise<ApiResponse<{ message: string }>> {
+    console.log('🟡 ApiService: deleteConnection called for id:', id);
+    try {
+      const response = await fetch(`${API_BASE_URL}/connections/${id}`, {
+        method: 'DELETE',
+        headers: this.getAuthHeaders(),
+      });
+
+      return await this.handleResponse<{ message: string }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: deleteConnection error:', error);
+      throw error;
+    }
+  }
+
+  // Message sending methods
+  async sendMessage(messageData: {
+    to: string;
+    email: string;
+    subject: string;
+    message: string;
+    type: string;
+  }): Promise<ApiResponse<{ messageId: string; sentAt: string; recipient: string; subject: string; type: string }>> {
+    console.log('🟡 ApiService: sendMessage called with data:', messageData);
+    try {
+      const response = await fetch(`${API_BASE_URL}/messages/send`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(messageData),
+      });
+
+      return await this.handleResponse<{ messageId: string; sentAt: string; recipient: string; subject: string; type: string }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: sendMessage error:', error);
+      throw error;
+    }
+  }
+
+  async getMessages(): Promise<ApiResponse<{ messages: any[] }>> {
+    console.log('🟡 ApiService: getMessages called');
+    try {
+      const response = await fetch(`${API_BASE_URL}/messages`, {
+        method: 'GET',
+        headers: this.getAuthHeaders(),
+      });
+
+      return await this.handleResponse<{ messages: any[] }>(response);
+    } catch (error) {
+      console.error('🟡 ApiService: getMessages error:', error);
+      throw error;
+    }
   }
 }
 

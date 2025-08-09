@@ -207,7 +207,9 @@ export function ApplicationProvider({ children }: ApplicationProviderProps) {
       dispatch({ type: 'SET_LOADING', payload: true })
       const response = await apiService.updateApplication(id, applicationData)
       if (response.status === 'success' && response.data) {
-        dispatch({ type: 'UPDATE_APPLICATION', payload: response.data.application || response.data as any })
+        // The backend returns { application: {...} } structure
+        const application = (response.data as any).application || response.data
+        dispatch({ type: 'UPDATE_APPLICATION', payload: application })
       } else {
         dispatch({ type: 'SET_ERROR', payload: 'Failed to update application' })
         throw new Error('Failed to update application')

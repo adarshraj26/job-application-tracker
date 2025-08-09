@@ -40,16 +40,16 @@ export default function OAuthButtons({
       >
         <Button 
           variant="outline" 
-          className="w-full flex items-center gap-3 hover:bg-gray-50 transition-all duration-200 hover:shadow-md border-gray-300 group"
+          className="w-full flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md border-gray-300 dark:border-gray-600 group"
           onClick={onGoogleClick}
           disabled={isLoading}
         >
           {isLoading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 dark:border-gray-400"></div>
           ) : (
-            <Chrome className="h-5 w-5 text-blue-600 group-hover:scale-110 transition-transform duration-200" />
+            <Chrome className="h-5 w-5 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-200" />
           )}
-          <span className="font-medium">
+          <span className="font-medium text-gray-700 dark:text-gray-200">
             {isLoading ? 'Loading...' : 'Google'}
           </span>
         </Button>
@@ -62,16 +62,16 @@ export default function OAuthButtons({
       >
         <Button 
           variant="outline" 
-          className="w-full flex items-center gap-3 hover:bg-gray-50 transition-all duration-200 hover:shadow-md border-gray-300 group"
+          className="w-full flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200 hover:shadow-md border-gray-300 dark:border-gray-600 group"
           onClick={onGitHubClick}
           disabled={isLoading}
         >
           {isLoading ? (
-            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600"></div>
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 dark:border-gray-400"></div>
           ) : (
-            <Github className="h-5 w-5 text-gray-800 group-hover:scale-110 transition-transform duration-200" />
+            <Github className="h-5 w-5 text-gray-800 dark:text-gray-200 group-hover:scale-110 transition-transform duration-200" />
           )}
-          <span className="font-medium">
+          <span className="font-medium text-gray-700 dark:text-gray-200">
             {isLoading ? 'Loading...' : 'GitHub'}
           </span>
         </Button>

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+
 import LandingHeader from '@/components/common/LandingHeader'
 import { 
   FileText, 
@@ -20,9 +21,24 @@ import {
   Brain,
   Shield,
   Globe,
-  Smartphone
+  Smartphone,
+  X,
+  Search,
+  Bell,
+  Settings,
+  Download,
+  Share2,
+  Lock,
+  Clock,
+  Award,
+  Heart,
+  BarChart,
+  PieChart,
+  LineChart,
+  Activity
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 const features = [
   {
@@ -79,6 +95,109 @@ const stats = [
 ]
 
 export default function LandingPage() {
+  const [isFeaturesModalOpen, setIsFeaturesModalOpen] = useState(false)
+
+  const allFeatures = [
+    {
+      icon: <FileText className="h-8 w-8" />,
+      title: "Smart Application Tracking",
+      description: "Track your job applications with detailed insights and progress monitoring",
+      category: "Core"
+    },
+    {
+      icon: <TrendingUp className="h-8 w-8" />,
+      title: "Analytics & Insights",
+      description: "Get powerful statistics and insights to optimize your job hunt strategy",
+      category: "Analytics"
+    },
+    {
+      icon: <Target className="h-8 w-8" />,
+      title: "Goal Setting",
+      description: "Set targets and track your progress towards landing your dream job",
+      category: "Core"
+    },
+    {
+      icon: <BarChart3 className="h-8 w-8" />,
+      title: "Performance Metrics",
+      description: "Monitor your application success rates and interview performance",
+      category: "Analytics"
+    },
+    {
+      icon: <Search className="h-8 w-8" />,
+      title: "Advanced Search",
+      description: "Find applications quickly with powerful search and filtering options",
+      category: "Productivity"
+    },
+    {
+      icon: <Bell className="h-8 w-8" />,
+      title: "Smart Notifications",
+      description: "Never miss important deadlines with intelligent reminder system",
+      category: "Productivity"
+    },
+    {
+      icon: <Calendar className="h-8 w-8" />,
+      title: "Interview Scheduling",
+      description: "Manage interview schedules and preparation with integrated calendar",
+      category: "Core"
+    },
+    {
+      icon: <MessageSquare className="h-8 w-8" />,
+      title: "Follow-up Tracking",
+      description: "Track follow-up emails and communication with potential employers",
+      category: "Communication"
+    },
+    {
+      icon: <Upload className="h-8 w-8" />,
+      title: "Resume Management",
+      description: "Store and organize multiple resume versions for different applications",
+      category: "Core"
+    },
+    {
+      icon: <BarChart className="h-8 w-8" />,
+      title: "Success Analytics",
+      description: "Analyze which strategies work best for your job search",
+      category: "Analytics"
+    },
+    {
+      icon: <Settings className="h-8 w-8" />,
+      title: "Customizable Workflow",
+      description: "Adapt the application process to match your personal workflow",
+      category: "Productivity"
+    },
+    {
+      icon: <Download className="h-8 w-8" />,
+      title: "Data Export",
+      description: "Export your application data for backup or analysis",
+      category: "Productivity"
+    },
+    {
+      icon: <Share2 className="h-8 w-8" />,
+      title: "Collaboration Tools",
+      description: "Share your progress with mentors or career coaches",
+      category: "Communication"
+    },
+    {
+      icon: <Lock className="h-8 w-8" />,
+      title: "Secure Data",
+      description: "Your sensitive job search data is encrypted and secure",
+      category: "Security"
+    },
+    {
+      icon: <Clock className="h-8 w-8" />,
+      title: "Time Tracking",
+      description: "Track time spent on applications and interviews",
+      category: "Productivity"
+    },
+    {
+      icon: <Award className="h-8 w-8" />,
+      title: "Achievement System",
+      description: "Earn badges and track milestones in your job search journey",
+      category: "Motivation"
+    }
+  ]
+
+  const categories = ["Core", "Analytics", "Productivity", "Communication", "Security", "Motivation"]
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       <LandingHeader />
@@ -92,22 +211,68 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-                Stay Organized on Your
+              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 italic">
+                Master Your Career Journey
                 <br />
-                <span className="text-gray-900 dark:text-white">Job Hunt</span>
+                <span className="text-gray-900 dark:text-white">
+                  One <span className="relative inline-block">
+                    Application
+                    <svg 
+                      className="absolute -bottom-3 left-0 w-full h-4 text-purple-400 dark:text-purple-300" 
+                      viewBox="0 0 300 25" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      {/* Main scribbled line */}
+                      <path 
+                        d="M10 18 Q30 8 50 18 Q70 8 90 18 Q110 8 130 18 Q150 8 170 18 Q190 8 210 18 Q230 8 250 18 Q270 8 290 18" 
+                        stroke="currentColor" 
+                        strokeWidth="6" 
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity="0.8"
+                      />
+                      {/* Overlapping scribble for more organic look */}
+                      <path 
+                        d="M15 20 Q35 10 55 20 Q75 10 95 20 Q115 10 135 20 Q155 10 175 20 Q195 10 215 20 Q235 10 255 20 Q275 10 285 20" 
+                        stroke="currentColor" 
+                        strokeWidth="5" 
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity="0.6"
+                      />
+                      {/* Additional scribble strokes for texture */}
+                      <path 
+                        d="M20 16 Q40 6 60 16 Q80 6 100 16 Q120 6 140 16 Q160 6 180 16 Q200 6 220 16 Q240 6 260 16 Q280 6 280 16" 
+                        stroke="currentColor" 
+                        strokeWidth="4" 
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity="0.4"
+                      />
+                      <path 
+                        d="M25 22 Q45 12 65 22 Q85 12 105 22 Q125 12 145 22 Q165 12 185 22 Q205 12 225 22 Q245 12 265 22 Q285 12 285 22" 
+                        stroke="currentColor" 
+                        strokeWidth="3.5" 
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity="0.3"
+                      />
+                    </svg>
+                  </span> at a Time
+                </span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-                Track your job applications effortlessly, gain valuable insights, and land your dream job faster. 
-                All in one powerful platform.
+                Transform your job search with intelligent tracking, powerful analytics, and strategic insights. 
+                Land your dream role with confidence and precision.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Link to="/register">
-                    <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold">
+                  <Link to="/signup">
+                    <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg">
                       Get Started Free
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Button>
@@ -117,9 +282,14 @@ export default function LandingPage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Button variant="outline" size="lg" className="px-8 py-4 text-lg font-semibold border-2">
-                    <Play className="mr-2 h-5 w-5" />
-                    Watch Demo
+                  <Button 
+                    variant="outline" 
+                    size="lg" 
+                    className="px-8 py-4 text-lg font-semibold border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg"
+                    onClick={() => setIsFeaturesModalOpen(true)}
+                  >
+                    <Eye className="mr-2 h-5 w-5" />
+                    View Features
                   </Button>
                 </motion.div>
               </div>
@@ -127,6 +297,106 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Features Modal */}
+      {isFeaturesModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="max-w-6xl max-h-[90vh] w-full overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-6">
+                <div className="text-center flex-1">
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    All Features
+                  </h2>
+                  <p className="text-center text-gray-600 dark:text-gray-300 mt-2">
+                    Discover everything JobTracker has to offer
+                  </p>
+                </div>
+                <button
+                  onClick={() => setIsFeaturesModalOpen(false)}
+                  className="ml-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  aria-label="Close modal"
+                >
+                  <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                </button>
+              </div>
+              
+              <div className="mt-6">
+                {categories.map((category) => (
+                  <div key={category} className="mb-8">
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                      {category} Features
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {allFeatures
+                        .filter(feature => feature.category === category)
+                        .map((feature, index) => (
+                          <motion.div
+                            key={index}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: index * 0.1 }}
+                            whileHover={{ y: -2 }}
+                            className="group"
+                          >
+                            <Card className={`h-full border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 ${
+                               feature.category === "Core" 
+                                 ? "bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-800/30 dark:hover:to-indigo-800/30" 
+                                 : feature.category === "Analytics" 
+                                 ? "bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-800/30 dark:hover:to-pink-800/30"
+                                 : feature.category === "Productivity" 
+                                 ? "bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 hover:from-green-100 hover:to-emerald-100 dark:hover:from-green-800/30 dark:hover:to-emerald-800/30"
+                                 : feature.category === "Communication" 
+                                 ? "bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 hover:from-orange-100 hover:to-amber-100 dark:hover:from-orange-800/30 dark:hover:to-amber-800/30"
+                                 : feature.category === "Security" 
+                                 ? "bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 hover:from-red-100 hover:to-rose-100 dark:hover:from-red-800/30 dark:hover:to-rose-800/30"
+                                 : "bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 hover:from-yellow-100 hover:to-orange-100 dark:hover:from-yellow-800/30 dark:hover:to-orange-800/30"
+                             }`}>
+                              <CardContent className="p-4">
+                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md ${
+                                  feature.category === "Core" 
+                                    ? "bg-gradient-to-r from-blue-500 to-indigo-600" 
+                                    : feature.category === "Analytics" 
+                                    ? "bg-gradient-to-r from-purple-500 to-pink-600"
+                                    : feature.category === "Productivity" 
+                                    ? "bg-gradient-to-r from-green-500 to-emerald-600"
+                                    : feature.category === "Communication" 
+                                    ? "bg-gradient-to-r from-orange-500 to-amber-600"
+                                    : feature.category === "Security" 
+                                    ? "bg-gradient-to-r from-red-500 to-rose-600"
+                                    : "bg-gradient-to-r from-yellow-500 to-orange-600"
+                                }`}>
+                                  <div className="text-white">
+                                    {feature.icon}
+                                  </div>
+                                </div>
+                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                  {feature.title}
+                                </h4>
+                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                  {feature.description}
+                                </p>
+                              </CardContent>
+                            </Card>
+                          </motion.div>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-8 text-center">
+                <Button 
+                  onClick={() => setIsFeaturesModalOpen(false)}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 font-semibold"
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Section */}
       <section className="py-16 bg-white dark:bg-gray-800">
@@ -153,7 +423,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <motion.h2
@@ -162,9 +432,9 @@ export default function LandingPage() {
               transition={{ duration: 0.6 }}
               className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
             >
-              Focus More on Applying Jobs,
+              Elevate Your Job Search Strategy,
               <br />
-              <span className="text-blue-600 dark:text-blue-400">Not Managing Them</span>
+              <span className="text-blue-600 dark:text-blue-400">Not Just Track Applications</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -172,7 +442,8 @@ export default function LandingPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
             >
-              Powerful features designed to streamline your job search and help you land your dream position faster.
+              Advanced features designed to give you the competitive edge in today's job market. 
+              Make every application count with data-driven insights.
             </motion.p>
           </div>
 
@@ -217,10 +488,11 @@ export default function LandingPage() {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                Track Jobs from Across the Web
+                Streamline Your Application Process
               </h2>
               <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-                Save job details with one click from all popular job boards. Move jobs between columns as you progress through the application process.
+                Capture opportunities from any job board instantly. Our intelligent system helps you organize, 
+                prioritize, and optimize your application strategy for maximum success.
               </p>
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
@@ -340,22 +612,23 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Ready to Transform Your Job Hunt?
+              Ready to Accelerate Your Career Growth?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands of job seekers who have already landed their dream jobs with our platform.
+              Join ambitious professionals who have already transformed their job search and landed 
+              their ideal positions with our comprehensive platform.
             </p>
-                         <motion.div
-               whileHover={{ scale: 1.05 }}
-               whileTap={{ scale: 0.95 }}
-             >
-                               <Link to="/register">
-                  <Button size="lg" className="bg-red-500 hover:bg-red-600 text-white font-bold px-8 py-4 text-lg shadow-xl hover:shadow-2xl border border-gray-800 rounded-sm transform hover:scale-105 transition-all duration-300 ease-in-out">
-                    Start Your Free Trial
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </Link>
-             </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link to="/signup">
+                <Button size="lg" className="bg-red-500 hover:bg-red-600 text-white font-bold px-8 py-4 text-lg shadow-xl hover:shadow-2xl border border-gray-800 rounded-sm transform hover:scale-105 transition-all duration-300 ease-in-out">
+                  Start Your Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
             <p className="text-blue-200 mt-4">
               No credit card required • 14-day free trial
             </p>

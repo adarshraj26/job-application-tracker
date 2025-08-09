@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import LandingPage from './pages/LandingPage';
+import FeaturesPage from './pages/FeaturesPage';
 
 // Components
 import Layout from './components/common/Layout';
@@ -60,6 +61,13 @@ function App() {
                     <ProtectedRoute>
                       <Layout>
                         <SettingsPage />
+                      </Layout>
+                    </ProtectedRoute>
+                  } />
+                  <Route path="/features" element={
+                    <ProtectedRoute>
+                      <Layout>
+                        <FeaturesPage />
                       </Layout>
                     </ProtectedRoute>
                   } />

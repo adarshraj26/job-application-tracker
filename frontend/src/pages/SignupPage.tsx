@@ -11,6 +11,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useAuth } from '@/context/AuthContext'
+import { useTheme } from '@/context/ThemeContext'
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
@@ -32,6 +33,7 @@ export default function SignupPage() {
   const [oauthError, setOauthError] = useState<string | null>(null)
   const [step, setStep] = useState(1)
   const navigate = useNavigate()
+  const { theme } = useTheme()
 
   const {
     register,
@@ -60,11 +62,18 @@ export default function SignupPage() {
     try {
       await signup(data.fullName, data.email, data.password)
       setStep(2)
-      // Navigate to applications page after showing success message
-      setTimeout(() => navigate('/applications'), 2000)
+      // Navigate to home page after showing success message
+      setTimeout(() => navigate('/'), 2000)
     } catch (error) {
       console.error('Signup failed:', error)
-      // You could add toast notification here
+      // Display the error message to the user
+      const errorMessage = error instanceof Error ? error.message : 'Signup failed. Please try again.'
+      setOauthError(errorMessage)
+      
+      // If it's an email already exists error, suggest login instead
+      if (errorMessage.includes('already exists')) {
+        setOauthError('An account with this email already exists. Please try logging in instead.')
+      }
     } finally {
       setIsLoading(false)
     }
@@ -139,14 +148,14 @@ export default function SignupPage() {
 
   if (step === 2) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
         <motion.div
           className="w-full max-w-md text-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
-          <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl">
+          <Card className="backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border-0 shadow-2xl">
             <CardContent className="p-8">
               <motion.div
                 variants={successVariants}
@@ -157,15 +166,15 @@ export default function SignupPage() {
                 </div>
               </motion.div>
               
-              <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 mb-2">
+              <motion.h2 variants={itemVariants} className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Welcome to JobTracker!
               </motion.h2>
               
-              <motion.p variants={itemVariants} className="text-gray-600 mb-6">
+              <motion.p variants={itemVariants} className="text-gray-600 dark:text-gray-300 mb-6">
                 Your account has been created successfully. You're all set to start tracking your job applications!
               </motion.p>
               
-              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2 text-sm text-gray-500">
+              <motion.div variants={itemVariants} className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
                 Redirecting to dashboard...
               </motion.div>
@@ -177,19 +186,19 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-20 left-20 w-32 h-32 bg-blue-200 rounded-full opacity-20"
+          className="absolute top-20 left-20 w-32 h-32 bg-blue-200 dark:bg-blue-800 rounded-full opacity-20"
           animate={floatingAnimation}
         />
         <motion.div
-          className="absolute top-40 right-20 w-24 h-24 bg-purple-200 rounded-full opacity-20"
+          className="absolute top-40 right-20 w-24 h-24 bg-purple-200 dark:bg-purple-800 rounded-full opacity-20"
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 1 } }}
         />
         <motion.div
-          className="absolute bottom-20 left-1/4 w-20 h-20 bg-pink-200 rounded-full opacity-20"
+          className="absolute bottom-20 left-1/4 w-20 h-20 bg-pink-200 dark:bg-pink-800 rounded-full opacity-20"
           animate={{ ...floatingAnimation, transition: { ...floatingAnimation.transition, delay: 2 } }}
         />
       </div>
@@ -200,7 +209,7 @@ export default function SignupPage() {
         initial="hidden"
         animate="visible"
       >
-        <Card className="backdrop-blur-sm bg-white/80 border-0 shadow-2xl">
+        <Card className="backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border-0 shadow-2xl">
           <CardHeader className="text-center space-y-4">
             <motion.div variants={itemVariants} className="flex justify-center">
               <div className="relative">
@@ -221,7 +230,7 @@ export default function SignupPage() {
               <CardTitle className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
                 Join JobTracker!
               </CardTitle>
-              <CardDescription className="text-gray-600 mt-2">
+              <CardDescription className="text-gray-600 dark:text-gray-300 mt-2">
                 Create your account and start organizing your job search
               </CardDescription>
             </motion.div>
@@ -233,23 +242,23 @@ export default function SignupPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg"
+                className="flex items-center gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg"
               >
-                <AlertCircle className="h-4 w-4 text-yellow-600" />
-                <p className="text-sm text-yellow-800">{oauthError}</p>
+                <AlertCircle className="h-4 w-4 text-yellow-600 dark:text-yellow-400" />
+                <p className="text-sm text-yellow-800 dark:text-yellow-200">{oauthError}</p>
               </motion.div>
             )}
 
             <motion.form variants={itemVariants} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-gray-700 font-medium">Full Name</Label>
+                <Label htmlFor="fullName" className="text-gray-700 dark:text-gray-200 font-medium">Full Name</Label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="fullName"
                     type="text"
                     placeholder="Enter your full name"
-                    className="pl-10 pr-4 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-4 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('fullName')}
                   />
                 </div>
@@ -265,14 +274,14 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
+                <Label htmlFor="email" className="text-gray-700 dark:text-gray-200 font-medium">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="Enter your email"
-                    className="pl-10 pr-4 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-4 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('email')}
                   />
                 </div>
@@ -288,20 +297,20 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
+                <Label htmlFor="password" className="text-gray-700 dark:text-gray-200 font-medium">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Create a strong password"
-                    className="pl-10 pr-12 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-12 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('password')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -319,26 +328,26 @@ export default function SignupPage() {
                         <div
                           key={key}
                           className={`h-1 rounded-full transition-colors ${
-                            valid ? 'bg-green-500' : 'bg-gray-200'
+                            valid ? 'bg-green-500' : 'bg-gray-200 dark:bg-gray-600'
                           }`}
                         />
                       ))}
                     </div>
                     <div className="grid grid-cols-2 gap-1 text-xs">
-                      <div className={`flex items-center gap-1 ${passwordStrength.length ? 'text-green-600' : 'text-gray-500'}`}>
-                        <CheckCircle className={`h-3 w-3 ${passwordStrength.length ? 'text-green-600' : 'text-gray-400'}`} />
+                      <div className={`flex items-center gap-1 ${passwordStrength.length ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                        <CheckCircle className={`h-3 w-3 ${passwordStrength.length ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
                         8+ characters
                       </div>
-                      <div className={`flex items-center gap-1 ${passwordStrength.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
-                        <CheckCircle className={`h-3 w-3 ${passwordStrength.uppercase ? 'text-green-600' : 'text-gray-400'}`} />
+                      <div className={`flex items-center gap-1 ${passwordStrength.uppercase ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                        <CheckCircle className={`h-3 w-3 ${passwordStrength.uppercase ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
                         Uppercase
                       </div>
-                      <div className={`flex items-center gap-1 ${passwordStrength.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
-                        <CheckCircle className={`h-3 w-3 ${passwordStrength.lowercase ? 'text-green-600' : 'text-gray-400'}`} />
+                      <div className={`flex items-center gap-1 ${passwordStrength.lowercase ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                        <CheckCircle className={`h-3 w-3 ${passwordStrength.lowercase ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
                         Lowercase
                       </div>
-                      <div className={`flex items-center gap-1 ${passwordStrength.number ? 'text-green-600' : 'text-gray-500'}`}>
-                        <CheckCircle className={`h-3 w-3 ${passwordStrength.number ? 'text-green-600' : 'text-gray-400'}`} />
+                      <div className={`flex items-center gap-1 ${passwordStrength.number ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                        <CheckCircle className={`h-3 w-3 ${passwordStrength.number ? 'text-green-600 dark:text-green-400' : 'text-gray-400 dark:text-gray-500'}`} />
                         Number
                       </div>
                     </div>
@@ -357,20 +366,20 @@ export default function SignupPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-gray-700 font-medium">Confirm Password</Label>
+                <Label htmlFor="confirmPassword" className="text-gray-700 dark:text-gray-200 font-medium">Confirm Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="Confirm your password"
-                    className="pl-10 pr-12 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                    className="pl-10 pr-12 py-3 border-gray-300 dark:border-gray-600 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                     {...register('confirmPassword')}
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                   >
                     {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -390,16 +399,16 @@ export default function SignupPage() {
                 <input 
                   type="checkbox" 
                   id="terms" 
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500" 
+                  className="rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 dark:bg-gray-700" 
                   required
                 />
-                <label htmlFor="terms" className="text-sm text-gray-600">
+                <label htmlFor="terms" className="text-sm text-gray-600 dark:text-gray-300">
                   I agree to the{' '}
-                  <Link to="/terms" className="text-blue-600 hover:text-blue-700 font-medium">
+                  <Link to="/terms" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                     Terms of Service
                   </Link>{' '}
                   and{' '}
-                  <Link to="/privacy" className="text-blue-600 hover:text-blue-700 font-medium">
+                  <Link to="/privacy" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                     Privacy Policy
                   </Link>
                 </label>
@@ -432,9 +441,9 @@ export default function SignupPage() {
             </motion.form>
 
             <motion.div variants={itemVariants} className="text-center">
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Already have an account?{' '}
-                <Link to="/login" className="text-blue-600 hover:text-blue-700 font-semibold">
+                <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-semibold">
                   Sign in
                 </Link>
               </p>
@@ -442,10 +451,10 @@ export default function SignupPage() {
 
             <motion.div variants={itemVariants} className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
+                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400">Or continue with</span>
               </div>
             </motion.div>
 

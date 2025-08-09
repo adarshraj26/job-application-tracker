@@ -1,0 +1,8 @@
+export { default as HomePage } from './HomePage'
+export { default as ApplicationsPage } from './ApplicationsPage'
+export { default as DashboardPage } from './DashboardPage'
+export { default as SettingsPage } from './SettingsPage'
+export { default as LoginPage } from './LoginPage'
+export { default as SignupPage } from './SignupPage'
+export { default as LandingPage } from './LandingPage'
+export { default as FeaturesPage } from './FeaturesPage'
