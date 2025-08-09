@@ -32,13 +32,20 @@ app.use('/api/', limiter);
 
 // CORS configuration
 const corsOrigins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:5173', 'http://localhost:5174'];
-app.use(cors({
+
+// CORS middleware configuration
+const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
-    // Temporarily allow all origins for development
-    if (process.env.NODE_ENV === 'development' || corsOrigins.indexOf(origin) !== -1 || corsOrigins.includes('*')) {
+    // Allow all origins if CORS_ORIGIN is set to "*"
+    if (process.env.CORS_ORIGIN === '*' || corsOrigins.includes('*')) {
+      return callback(null, true);
+    }
+    
+    // Check if origin is in allowed list
+    if (corsOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
       console.log('CORS blocked origin:', origin);
@@ -48,8 +55,14 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight OPTIONS requests explicitly
+app.options('*', cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -63,6 +76,16 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'JobTracker API is running',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    message: 'CORS is working!',
+    origin: req.headers.origin,
     timestamp: new Date().toISOString()
   });
 });
