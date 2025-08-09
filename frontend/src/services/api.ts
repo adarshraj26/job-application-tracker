@@ -1,5 +1,10 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
+// Debug logging
+console.log('🟡 API Service: VITE_API_URL from env:', import.meta.env.VITE_API_URL);
+console.log('🟡 API Service: Final API_BASE_URL:', API_BASE_URL);
+console.log('🟡 API Service: import.meta.env:', import.meta.env);
+
 // Mock data for development - persisted in localStorage
 const getMockApplications = (): any[] => {
   const stored = localStorage.getItem('mockApplications');
