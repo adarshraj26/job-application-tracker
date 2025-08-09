@@ -21,19 +21,19 @@ export default function Header() {
 
   return (
     <>
-      <header className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-md border border-white/20 dark:border-gray-700/20 shadow-xl rounded-3xl mx-4 sticky top-4 z-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="px-4 sm:px-6 lg:px-8">
-              <div className="flex h-16 items-center justify-between">
-                <Link to="/home" className="flex items-center space-x-3 group">
-                  <div className="p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                    <Briefcase className="h-6 w-6 text-white" />
+      <header className="bg-white/10 dark:bg-gray-900/10 backdrop-blur-md border border-white/20 dark:border-gray-700/20 shadow-xl rounded-3xl mx-2 sm:mx-4 sticky top-4 z-50">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 lg:px-8">
+            <div className="px-2 sm:px-4 lg:px-8">
+              <div className="flex h-14 sm:h-16 items-center justify-between">
+                <Link to="/home" className="flex items-center space-x-2 sm:space-x-3 group">
+                  <div className="p-1.5 sm:p-2 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                    <Briefcase className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                   </div>
                   <div>
-                    <span className="text-xl font-bold text-gray-800 dark:text-white">
+                    <span className="text-lg sm:text-xl font-bold text-gray-800 dark:text-white">
                       JobTracker
                     </span>
-                    <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1">Career Management</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 -mt-1 hidden sm:block">Career Management</p>
                   </div>
                 </Link>
 
@@ -115,7 +115,7 @@ export default function Header() {
                 </nav>
 
                 {/* Mobile Navigation */}
-                <div className="md:hidden flex items-center space-x-2">
+                <div className="md:hidden flex items-center space-x-1">
                   {navigation.map((item) => {
                     const Icon = item.icon
                     const isActive = location.pathname === item.href
@@ -125,7 +125,7 @@ export default function Header() {
                         variant={isActive ? "default" : "ghost"}
                         size="sm"
                         asChild
-                        className={`p-2 ${
+                        className={`p-1.5 sm:p-2 ${
                           isActive 
                             ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:from-blue-600 hover:to-purple-700' 
                             : 'text-gray-700 hover:bg-gray-100 hover:text-blue-700'
@@ -137,6 +137,31 @@ export default function Header() {
                       </Button>
                     )
                   })}
+                  
+                  {/* Mobile User Menu */}
+                  {user && (
+                    <div className="flex items-center space-x-1 ml-2">
+                      <ThemeToggle />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        asChild
+                        className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
+                      >
+                        <Link to="/settings">
+                          <Settings className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={logout}
+                        className="p-1.5 sm:p-2 text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400"
+                      >
+                        <LogOut className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

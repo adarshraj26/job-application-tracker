@@ -238,14 +238,14 @@ export default function ApplicationForm() {
             </motion.div>
 
             {/* Application Details */}
-            <motion.div variants={fieldVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div variants={fieldVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label htmlFor="workMode" className="text-gray-700 dark:text-gray-200 font-medium">Work Mode *</Label>
+                <Label htmlFor="workMode" className="text-gray-700 dark:text-gray-200 font-medium text-sm sm:text-base">Work Mode *</Label>
                 <Select 
                   value={watch('workMode')} 
                   onValueChange={(value) => setValue('workMode', value as any)}
                 >
-                  <SelectTrigger className={`${errors.workMode ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}>
+                  <SelectTrigger className={`${errors.workMode ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm sm:text-base`}>
                     <SelectValue placeholder="Select work mode" className="text-gray-500 dark:text-gray-400" />
                   </SelectTrigger>
                   <SelectContent className="bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
@@ -269,12 +269,12 @@ export default function ApplicationForm() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="salary" className="text-gray-700 dark:text-gray-200 font-medium">Salary (₹) *</Label>
+                <Label htmlFor="salary" className="text-gray-700 dark:text-gray-200 font-medium text-sm sm:text-base">Salary (₹) *</Label>
                 <Input
                   id="salary"
                   {...register('salary')}
                   placeholder="Enter salary"
-                  className={`${errors.salary ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
+                  className={`${errors.salary ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm sm:text-base`}
                 />
                 {errors.salary && (
                   <motion.p 
@@ -289,14 +289,14 @@ export default function ApplicationForm() {
               </div>
             </motion.div>
 
-            <motion.div variants={fieldVariants} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <motion.div variants={fieldVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
-                <Label htmlFor="appliedDate" className="text-gray-700 dark:text-gray-200 font-medium">Applied Date *</Label>
+                <Label htmlFor="appliedDate" className="text-gray-700 dark:text-gray-200 font-medium text-sm sm:text-base">Applied Date *</Label>
                 <Input
                   id="appliedDate"
                   type="date"
                   {...register('appliedDate')}
-                  className={`${errors.appliedDate ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400`}
+                  className={`${errors.appliedDate ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-sm sm:text-base`}
                 />
                 {errors.appliedDate && (
                   <motion.p 

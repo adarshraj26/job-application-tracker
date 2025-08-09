@@ -204,21 +204,21 @@ export default function LandingPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-12 sm:pb-16">
           <div className="text-center">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6 italic">
+              <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 italic leading-tight">
                 Master Your Career Journey
                 <br />
                 <span className="text-gray-900 dark:text-white">
                   One <span className="relative inline-block">
                     Application
                     <svg 
-                      className="absolute -bottom-3 left-0 w-full h-4 text-purple-400 dark:text-purple-300" 
+                      className="absolute -bottom-2 sm:-bottom-3 left-0 w-full h-3 sm:h-4 text-purple-400 dark:text-purple-300" 
                       viewBox="0 0 300 25" 
                       fill="none" 
                       xmlns="http://www.w3.org/2000/svg"
@@ -262,33 +262,35 @@ export default function LandingPage() {
                   </span> at a Time
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
                 Transform your job search with intelligent tracking, powerful analytics, and strategic insights. 
                 Land your dream role with confidence and precision.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4">
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="w-full sm:w-auto"
                 >
-                  <Link to="/signup">
-                    <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-lg">
+                  <Link to="/signup" className="block w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg">
                       Get Started Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                   </Link>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  className="w-full sm:w-auto"
                 >
                   <Button 
                     variant="outline" 
                     size="lg" 
-                    className="px-8 py-4 text-lg font-semibold border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-lg"
                     onClick={() => setIsFeaturesModalOpen(true)}
                   >
-                    <Eye className="mr-2 h-5 w-5" />
+                    <Eye className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                     View Features
                   </Button>
                 </motion.div>
@@ -300,34 +302,34 @@ export default function LandingPage() {
 
       {/* Features Modal */}
       {isFeaturesModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="max-w-6xl max-h-[90vh] w-full overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="max-w-6xl max-h-[95vh] sm:max-h-[90vh] w-full overflow-y-auto bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-2xl">
+            <div className="p-4 sm:p-6">
+              <div className="flex justify-between items-start mb-4 sm:mb-6">
                 <div className="text-center flex-1">
-                  <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                  <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     All Features
                   </h2>
-                  <p className="text-center text-gray-600 dark:text-gray-300 mt-2">
+                  <p className="text-center text-gray-600 dark:text-gray-300 mt-2 text-sm sm:text-base">
                     Discover everything JobTracker has to offer
                   </p>
                 </div>
                 <button
                   onClick={() => setIsFeaturesModalOpen(false)}
-                  className="ml-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                  className="ml-2 sm:ml-4 p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
                   aria-label="Close modal"
                 >
-                  <X className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                  <X className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-300" />
                 </button>
               </div>
               
-              <div className="mt-6">
+              <div className="mt-4 sm:mt-6">
                 {categories.map((category) => (
-                  <div key={category} className="mb-8">
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+                  <div key={category} className="mb-6 sm:mb-8">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
                       {category} Features
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                       {allFeatures
                         .filter(feature => feature.category === category)
                         .map((feature, index) => (
@@ -352,8 +354,8 @@ export default function LandingPage() {
                                  ? "bg-gradient-to-br from-red-50 to-rose-50 dark:from-red-900/20 dark:to-rose-900/20 hover:from-red-100 hover:to-rose-100 dark:hover:from-red-800/30 dark:hover:to-rose-800/30"
                                  : "bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 hover:from-yellow-100 hover:to-orange-100 dark:hover:from-yellow-800/30 dark:hover:to-orange-800/30"
                              }`}>
-                              <CardContent className="p-4">
-                                <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md ${
+                              <CardContent className="p-3 sm:p-4">
+                                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300 shadow-md ${
                                   feature.category === "Core" 
                                     ? "bg-gradient-to-r from-blue-500 to-indigo-600" 
                                     : feature.category === "Analytics" 
@@ -370,10 +372,10 @@ export default function LandingPage() {
                                     {feature.icon}
                                   </div>
                                 </div>
-                                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                                <h4 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white mb-1 sm:mb-2">
                                   {feature.title}
                                 </h4>
-                                <p className="text-sm text-gray-600 dark:text-gray-300">
+                                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                                   {feature.description}
                                 </p>
                               </CardContent>
@@ -385,10 +387,10 @@ export default function LandingPage() {
                 ))}
               </div>
               
-              <div className="mt-8 text-center">
+              <div className="mt-6 sm:mt-8 text-center">
                 <Button 
                   onClick={() => setIsFeaturesModalOpen(false)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-3 font-semibold"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-2 sm:py-3 font-semibold"
                 >
                   Close
                 </Button>
@@ -399,9 +401,9 @@ export default function LandingPage() {
       )}
 
       {/* Stats Section */}
-      <section className="py-16 bg-white dark:bg-gray-800">
+      <section className="py-12 sm:py-16 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-8">
             {stats.map((stat, index) => (
               <motion.div
                 key={index}
@@ -410,10 +412,10 @@ export default function LandingPage() {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 className="text-center"
               >
-                <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-1 sm:mb-2">
                   {stat.number}
                 </div>
-                <div className="text-gray-600 dark:text-gray-300 font-medium">
+                <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300 font-medium">
                   {stat.label}
                 </div>
               </motion.div>
@@ -423,14 +425,14 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 bg-gray-50 dark:bg-gray-900">
+      <section id="features" className="py-16 sm:py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12 sm:mb-16">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight"
             >
               Elevate Your Job Search Strategy,
               <br />
@@ -440,14 +442,14 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto"
+              className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-4"
             >
               Advanced features designed to give you the competitive edge in today's job market. 
               Make every application count with data-driven insights.
             </motion.p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -458,16 +460,16 @@ export default function LandingPage() {
                 className="group"
               >
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800">
-                  <CardContent className="p-6 text-center">
-                    <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <CardContent className="p-4 sm:p-6 text-center">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
                       <div className="text-white">
                         {feature.icon}
                       </div>
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-2 sm:mb-3">
                       {feature.title}
                     </h3>
-                    <p className="text-gray-600 dark:text-gray-300">
+                    <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                       {feature.description}
                     </p>
                   </CardContent>
@@ -479,33 +481,33 @@ export default function LandingPage() {
       </section>
 
       {/* Interactive Demo Section */}
-      <section className="py-20 bg-white dark:bg-gray-800">
+      <section className="py-16 sm:py-20 bg-white dark:bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight">
                 Streamline Your Application Process
               </h2>
-              <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+              <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8">
                 Capture opportunities from any job board instantly. Our intelligent system helps you organize, 
                 prioritize, and optimize your application strategy for maximum success.
               </p>
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">One-click save job details</span>
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">One-click save job details</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Visual progress tracking</span>
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Visual progress tracking</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <CheckCircle className="h-6 w-6 text-green-500" />
-                  <span className="text-gray-700 dark:text-gray-300">Real-time analytics</span>
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 flex-shrink-0" />
+                  <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">Real-time analytics</span>
                 </div>
               </div>
             </motion.div>
