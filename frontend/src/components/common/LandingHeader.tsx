@@ -49,35 +49,64 @@ export default function LandingHeader() {
             <ThemeToggle />
             <button
               onClick={toggleMenu}
-              className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-colors duration-200"
+              className="p-2 rounded-lg bg-white/10 dark:bg-gray-800/10 hover:bg-white/20 dark:hover:bg-gray-800/20 transition-all duration-300 ease-out"
               aria-label="Toggle menu"
             >
               <motion.div
                 animate={isMenuOpen ? "open" : "closed"}
                 className="relative w-6 h-6"
+                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
               >
                 <motion.span
-                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-colors duration-300"
                   style={{ top: "4px" }}
                   variants={{
-                    closed: { rotate: 0, y: 0 },
-                    open: { rotate: 45, y: 6 }
+                    closed: { 
+                      rotate: 0, 
+                      y: 0,
+                      opacity: 1,
+                      transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
+                    },
+                    open: { 
+                      rotate: 45, 
+                      y: 6,
+                      opacity: 1,
+                      transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+                    }
                   }}
                 />
                 <motion.span
-                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-colors duration-300"
                   style={{ top: "10px" }}
                   variants={{
-                    closed: { opacity: 1 },
-                    open: { opacity: 0 }
+                    closed: { 
+                      opacity: 1,
+                      scale: 1,
+                      transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                    },
+                    open: { 
+                      opacity: 0,
+                      scale: 0,
+                      transition: { duration: 0.2, ease: [0.4, 0, 0.2, 1] }
+                    }
                   }}
                 />
                 <motion.span
-                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-all duration-300"
+                  className="absolute block w-6 h-0.5 bg-gray-800 dark:bg-white transform transition-colors duration-300"
                   style={{ top: "16px" }}
                   variants={{
-                    closed: { rotate: 0, y: 0 },
-                    open: { rotate: -45, y: -6 }
+                    closed: { 
+                      rotate: 0, 
+                      y: 0,
+                      opacity: 1,
+                      transition: { duration: 0.3, ease: [0.4, 0, 0.2, 1] }
+                    },
+                    open: { 
+                      rotate: -45, 
+                      y: -6,
+                      opacity: 1,
+                      transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] }
+                    }
                   }}
                 />
               </motion.div>
@@ -86,31 +115,46 @@ export default function LandingHeader() {
         </div>
 
         {/* Mobile Navigation Menu */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {isMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: "auto", y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ 
+                duration: 0.4, 
+                ease: [0.4, 0, 0.2, 1],
+                opacity: { duration: 0.3 },
+                height: { duration: 0.4 }
+              }}
               className="md:hidden overflow-hidden border-t border-white/20 dark:border-gray-700/20"
             >
               <div className="py-4 space-y-3">
                 <motion.div
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
+                  exit={{ x: -20, opacity: 0 }}
+                  transition={{ 
+                    delay: 0.1, 
+                    duration: 0.3, 
+                    ease: [0.4, 0, 0.2, 1] 
+                  }}
                 >
-                  <Button variant="ghost" asChild className="w-full justify-start text-lg">
+                  <Button variant="ghost" asChild className="w-full justify-start text-lg transition-all duration-300 hover:bg-white/10 dark:hover:bg-gray-800/10">
                     <Link to="/login" onClick={closeMenu}>Login</Link>
                   </Button>
                 </motion.div>
                 <motion.div
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
+                  exit={{ x: -20, opacity: 0 }}
+                  transition={{ 
+                    delay: 0.2, 
+                    duration: 0.3, 
+                    ease: [0.4, 0, 0.2, 1] 
+                  }}
                 >
-                  <Button asChild className="w-full justify-start text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                  <Button asChild className="w-full justify-start text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white transition-all duration-300">
                     <Link to="/signup" onClick={closeMenu}>Get Started</Link>
                   </Button>
                 </motion.div>
