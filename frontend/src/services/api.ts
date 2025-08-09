@@ -125,7 +125,7 @@ class ApiService {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
       
-      const response = await fetch(`${API_BASE_URL}/health`, { 
+      const response = await fetch(`${API_BASE_URL}/api/health`, { 
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ class ApiService {
     console.log('🟡 ApiService: Request body:', JSON.stringify(applicationData));
     
     try {
-      const response = await fetch(`${API_BASE_URL}/applications`, {
+      const response = await fetch(`${API_BASE_URL}/api/applications`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(applicationData),
@@ -194,7 +194,7 @@ class ApiService {
       });
     }
 
-    const url = `${API_BASE_URL}/applications?${searchParams}`;
+    const url = `${API_BASE_URL}/api/applications?${searchParams}`;
     console.log('🟡 ApiService: Making request to:', url);
     
     try {
@@ -211,13 +211,13 @@ class ApiService {
   // Authentication - Real backend implementation
   async register(userData: { fullName: string; email: string; password: string }) {
     console.log('🟡 ApiService: Using REAL backend for register');
-    console.log('🟡 ApiService: Register URL:', `${API_BASE_URL}/auth/register`);
+    console.log('🟡 ApiService: Register URL:', `${API_BASE_URL}/api/auth/register`);
     
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
-      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(userData),
@@ -239,14 +239,14 @@ class ApiService {
 
   async login(credentials: { email: string; password: string }) {
     console.log('🟡 ApiService: Using REAL backend for login');
-    console.log('🟡 ApiService: Login URL:', `${API_BASE_URL}/auth/login`);
+    console.log('🟡 ApiService: Login URL:', `${API_BASE_URL}/api/auth/login`);
     console.log('🟡 ApiService: Login credentials:', { email: credentials.email, password: '***' });
     
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
       
-      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(credentials),
@@ -269,7 +269,7 @@ class ApiService {
   async getCurrentUser() {
     console.log('🟡 ApiService: Using REAL backend for getCurrentUser');
     
-    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
       headers: this.getAuthHeaders(),
     });
     return this.handleResponse(response);
@@ -279,7 +279,7 @@ class ApiService {
     const backendAvailable = await this.isBackendAvailable();
     
     if (backendAvailable) {
-      const response = await fetch(`${API_BASE_URL}/auth/updatepassword`, {
+      const response = await fetch(`${API_BASE_URL}/api/auth/updatepassword`, {
         method: 'PUT',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(passwords),
@@ -683,7 +683,7 @@ class ApiService {
 
   // Health Check
   async healthCheck() {
-    const response = await fetch(`${API_BASE_URL}/health`);
+    const response = await fetch(`${API_BASE_URL}/api/health`);
     return this.handleResponse(response);
   }
 
