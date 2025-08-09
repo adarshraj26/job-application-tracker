@@ -122,15 +122,19 @@ class ApiService {
   private async isBackendAvailable(): Promise<boolean> {
     console.log('🟡 ApiService: Checking if backend is available at:', `${API_BASE_URL}/health`);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+      
       const response = await fetch(`${API_BASE_URL}/health`, { 
         method: 'GET',
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        // Add timeout to prevent long waits
-        signal: AbortSignal.timeout(5000)
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       console.log('🟡 ApiService: Health check response status:', response.status);
       console.log('🟡 ApiService: Health check response ok:', response.ok);
       return response.ok;
@@ -207,13 +211,30 @@ class ApiService {
   // Authentication - Real backend implementation
   async register(userData: { fullName: string; email: string; password: string }) {
     console.log('🟡 ApiService: Using REAL backend for register');
+    console.log('🟡 ApiService: Register URL:', `${API_BASE_URL}/auth/register`);
     
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
-      method: 'POST',
-      headers: this.getAuthHeaders(),
-      body: JSON.stringify(userData),
-    });
-    return this.handleResponse(response);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
+        method: 'POST',
+        headers: this.getAuthHeaders(),
+        body: JSON.stringify(userData),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      console.log('🟡 ApiService: Register response status:', response.status);
+      console.log('🟡 ApiService: Register response ok:', response.ok);
+      return this.handleResponse(response);
+    } catch (error) {
+      console.error('🟡 ApiService: Register fetch error:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Registration request timed out. Please try again.');
+      }
+      throw error;
+    }
   }
 
   async login(credentials: { email: string; password: string }) {
@@ -222,16 +243,25 @@ class ApiService {
     console.log('🟡 ApiService: Login credentials:', { email: credentials.email, password: '***' });
     
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(credentials),
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
       console.log('🟡 ApiService: Login response status:', response.status);
       console.log('🟡 ApiService: Login response ok:', response.ok);
       return this.handleResponse(response);
     } catch (error) {
       console.error('🟡 ApiService: Login fetch error:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Login request timed out. Please try again.');
+      }
       throw error;
     }
   }
@@ -774,6 +804,22 @@ class ApiService {
     } catch (error) {
       console.error('🟡 ApiService: getMessages error:', error);
       throw error;
+    }
+  }
+
+  // Public test function to check backend connectivity
+  async testBackendConnection(): Promise<{ success: boolean; message: string }> {
+    console.log('🟡 ApiService: Testing backend connection...');
+    try {
+      const isAvailable = await this.isBackendAvailable();
+      if (isAvailable) {
+        return { success: true, message: 'Backend is reachable and responding' };
+      } else {
+        return { success: false, message: 'Backend is not reachable' };
+      }
+    } catch (error) {
+      console.error('🟡 ApiService: Backend connection test failed:', error);
+      return { success: false, message: `Connection test failed: ${error instanceof Error ? error.message : 'Unknown error'}` };
     }
   }
 }
