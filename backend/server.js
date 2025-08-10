@@ -31,22 +31,25 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // CORS configuration - Allow all origins for development
-app.use(cors({
-  origin: true, // Allow all origins
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN === "*" ? true : [
+    'https://application-manager-brown.vercel.app',
+    'https://job-application-tracker-frontend.vercel.app',
+    'https://jobtracker-frontend.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    process.env.CORS_ORIGIN
+  ].filter(Boolean),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   optionsSuccessStatus: 200 // Some legacy browsers choke on 204
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight OPTIONS requests explicitly
-app.options('*', cors({
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-  optionsSuccessStatus: 200
-}));
+app.options('*', cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
