@@ -38,6 +38,7 @@ const corsOptions = {
   origin: process.env.CORS_ORIGIN === "*" ? true : [
     'https://application-manager-brown.vercel.app',
     'https://application-manager-7j38oijge-ad26082608-gmailcoms-projects.vercel.app',
+    'https://application-manager-2opue6vxs-ad26082608-gmailcoms-projects.vercel.app',
     'https://job-application-tracker-frontend.vercel.app',
     'https://jobtracker-frontend.vercel.app',
     'http://localhost:3000',
