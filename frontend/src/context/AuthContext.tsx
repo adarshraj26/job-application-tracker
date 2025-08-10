@@ -144,6 +144,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           createdAt: userData.createdAt ? new Date(userData.createdAt) : undefined
         })
         
+        // Set flag for new user to trigger welcome tour
+        localStorage.setItem('isNewUser', 'true')
         // Reset tour for new users
         localStorage.removeItem('hasSeenWelcomeTour')
       } else {

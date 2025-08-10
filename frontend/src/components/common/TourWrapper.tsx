@@ -12,8 +12,11 @@ export default function TourWrapper({ children }: TourWrapperProps) {
   const { showWelcomeTour, setShowWelcomeTour, hasSeenTour, markTourAsSeen } = useTour()
 
   useEffect(() => {
-    // Show welcome tour for new authenticated users who haven't seen it
-    if (isAuthenticated && user && !hasSeenTour) {
+    // Only show welcome tour for new users who haven't seen it
+    // Check if this is a new user (recently registered) by checking if hasSeenWelcomeTour was reset
+    const isNewUser = localStorage.getItem('isNewUser') === 'true'
+    
+    if (isAuthenticated && user && !hasSeenTour && isNewUser) {
       // Small delay to ensure the app is fully loaded
       const timer = setTimeout(() => {
         setShowWelcomeTour(true)
@@ -38,10 +41,14 @@ export default function TourWrapper({ children }: TourWrapperProps) {
 
   const handleTourComplete = () => {
     markTourAsSeen()
+    // Remove the new user flag after tour completion
+    localStorage.removeItem('isNewUser')
   }
 
   const handleTourClose = () => {
     setShowWelcomeTour(false)
+    // Remove the new user flag if tour is closed
+    localStorage.removeItem('isNewUser')
   }
 
   return (

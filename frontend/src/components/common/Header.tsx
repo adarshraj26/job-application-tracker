@@ -237,7 +237,7 @@ export default function Header() {
                               className={`w-full justify-start text-lg transition-all duration-300 ${
                                 isActive 
                                   ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700' 
-                                  : 'hover:bg-white/10 dark:hover:bg-gray-800/10'
+                                  : 'text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800/10'
                               }`}
                             >
                               <Link to={item.href} onClick={closeMenu} className="flex items-center space-x-3">
@@ -289,7 +289,7 @@ export default function Header() {
                             }}
                             className="pt-2 border-t border-white/20 dark:border-gray-700/20"
                           >
-                            <div className="flex items-center space-x-3 px-3 py-2 text-gray-700 dark:text-gray-300">
+                            <div className="flex items-center space-x-3 px-3 py-2 text-gray-800 dark:text-gray-300">
                               <User className="h-5 w-5" />
                               <span className="text-lg">{user.fullName}</span>
                             </div>
@@ -308,7 +308,7 @@ export default function Header() {
                             <Button 
                               variant="ghost" 
                               asChild 
-                              className="w-full justify-start text-lg text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300"
+                              className="w-full justify-start text-lg text-gray-800 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300"
                             >
                               <Link to="/settings" onClick={closeMenu} className="flex items-center space-x-3">
                                 <Settings className="h-5 w-5" />
@@ -330,7 +330,7 @@ export default function Header() {
                             <Button 
                               variant="ghost" 
                               onClick={handleLogout}
-                              className="w-full justify-start text-lg text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-all duration-300"
+                              className="w-full justify-start text-lg text-gray-800 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-all duration-300"
                             >
                               <LogOut className="h-5 w-5 mr-3" />
                               <span>Logout</span>
