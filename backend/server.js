@@ -18,6 +18,9 @@ const { authMiddleware } = require('./middleware/auth');
 
 const app = express();
 
+// Trust proxy for rate limiting (needed for Render deployment)
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet());
 app.use(morgan('combined'));
@@ -34,6 +37,7 @@ app.use('/api/', limiter);
 const corsOptions = {
   origin: process.env.CORS_ORIGIN === "*" ? true : [
     'https://application-manager-brown.vercel.app',
+    'https://application-manager-7j38oijge-ad26082608-gmailcoms-projects.vercel.app',
     'https://job-application-tracker-frontend.vercel.app',
     'https://jobtracker-frontend.vercel.app',
     'http://localhost:3000',
