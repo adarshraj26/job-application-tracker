@@ -3,7 +3,11 @@ console.log('🟡 API Service: VITE_API_URL from env:', import.meta.env.VITE_API
 console.log('🟡 API Service: import.meta.env:', import.meta.env);
 
 // Use hardcoded URL as fallback to ensure it works
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://jobtracker-backend-6r0y.onrender.com';
+// Remove trailing /api if present to prevent double /api/api/ issue
+let API_BASE_URL = import.meta.env.VITE_API_URL || 'https://jobtracker-backend-6r0y.onrender.com';
+if (API_BASE_URL.endsWith('/api')) {
+  API_BASE_URL = API_BASE_URL.slice(0, -4); // Remove trailing /api
+}
 
 console.log('🟡 API Service: Final API_BASE_URL:', API_BASE_URL);
 
@@ -796,7 +800,7 @@ class ApiService {
   }): Promise<ApiResponse<{ messageId: string; sentAt: string; recipient: string; subject: string; type: string }>> {
     console.log('🟡 ApiService: sendMessage called with data:', messageData);
     try {
-      const response = await fetch(`${API_BASE_URL}/messages/send`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages/send`, {
         method: 'POST',
         headers: this.getAuthHeaders(),
         body: JSON.stringify(messageData),
@@ -812,7 +816,7 @@ class ApiService {
   async getMessages(): Promise<ApiResponse<{ messages: any[] }>> {
     console.log('🟡 ApiService: getMessages called');
     try {
-      const response = await fetch(`${API_BASE_URL}/messages`, {
+      const response = await fetch(`${API_BASE_URL}/api/messages`, {
         method: 'GET',
         headers: this.getAuthHeaders(),
       });
@@ -882,4 +886,4 @@ class ApiService {
   }
 }
 
-export const apiService = new ApiService(); 
+export const apiService = new ApiService();

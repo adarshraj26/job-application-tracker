@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Edit, Trash2, ExternalLink, Calendar } from 'lucide-react'
+import { Edit, Trash2, ExternalLink, Calendar, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -17,6 +17,7 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
   const { deleteApplication } = useApplications()
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalViewMode, setModalViewMode] = useState<'edit' | 'view'>('edit')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null)
 
@@ -29,6 +30,20 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
       return
     }
     setSelectedApplication(application)
+    setModalViewMode('edit')
+    setIsModalOpen(true)
+  }
+
+  const handleView = (application: JobApplication) => {
+    console.log('👁️ View button clicked for application:', application)
+    console.log('👁️ Application ID:', application.id)
+    if (!application.id) {
+      console.error('❌ View failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
+    setSelectedApplication(application)
+    setModalViewMode('view')
     setIsModalOpen(true)
   }
 
@@ -164,6 +179,19 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
                     <div className="relative group">
                       <Button
                         size="sm"
+                        onClick={() => handleView(application)}
+                        className="bg-purple-500 hover:bg-purple-600 text-white rounded-full p-2 transition-all duration-200 hover:scale-110"
+                      >
+                        <Eye className="h-3 w-3" />
+                      </Button>
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                        View
+                        <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-800"></div>
+                      </div>
+                    </div>
+                    <div className="relative group">
+                      <Button
+                        size="sm"
                         onClick={() => handleDelete(application.id)}
                         className="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition-all duration-200 hover:scale-110"
                       >
@@ -189,6 +217,7 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
           setIsModalOpen(false)
           setSelectedApplication(null)
         }}
+        viewMode={modalViewMode}
       />
 
       <ConfirmationModal

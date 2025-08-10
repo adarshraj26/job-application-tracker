@@ -18,6 +18,7 @@ export default function ApplicationsList({ applications: propApplications }: App
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards') // Default to cards for better mobile UX
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [modalViewMode, setModalViewMode] = useState<'edit' | 'view'>('edit')
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [applicationToDelete, setApplicationToDelete] = useState<string | null>(null)
   
@@ -47,8 +48,26 @@ export default function ApplicationsList({ applications: propApplications }: App
     try {
       setSelectedApplication(application)
       setIsModalOpen(true)
+      setModalViewMode('edit')
     } catch (error) {
       console.error('❌ ApplicationsList: Error in handleEdit:', error)
+    }
+  }
+
+  const handleView = (application: JobApplication) => {
+    console.log('👁️ ApplicationsList: View button clicked for application:', application)
+    console.log('👁️ ApplicationsList: Application ID:', application.id)
+    if (!application.id) {
+      console.error('❌ ApplicationsList: View failed: No application ID provided')
+      alert('Error: Application ID not found. Please refresh the page and try again.')
+      return
+    }
+    try {
+      setSelectedApplication(application)
+      setIsModalOpen(true)
+      setModalViewMode('view')
+    } catch (error) {
+      console.error('❌ ApplicationsList: Error in handleView:', error)
     }
   }
 
@@ -129,6 +148,7 @@ export default function ApplicationsList({ applications: propApplications }: App
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                     onViewResume={handleViewResume}
+                    onView={handleView}
                   />
                 ))}
               </div>
@@ -143,6 +163,7 @@ export default function ApplicationsList({ applications: propApplications }: App
             setIsModalOpen(false)
             setSelectedApplication(null)
           }}
+          viewMode={modalViewMode}
         />
 
         <ConfirmationModal

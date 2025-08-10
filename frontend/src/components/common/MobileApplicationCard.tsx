@@ -1,4 +1,4 @@
-import { Edit, Trash2, ExternalLink, Calendar, MapPin, Building, DollarSign } from 'lucide-react'
+import { Edit, Trash2, ExternalLink, Calendar, MapPin, Building, DollarSign, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,13 +11,15 @@ interface MobileApplicationCardProps {
   onEdit: (application: JobApplication) => void
   onDelete: (id: string) => void
   onViewResume: (url: string) => void
+  onView: (application: JobApplication) => void
 }
 
 export default function MobileApplicationCard({ 
   application, 
   onEdit, 
   onDelete, 
-  onViewResume 
+  onViewResume,
+  onView
 }: MobileApplicationCardProps) {
   return (
     <Card className="mb-4 border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
@@ -120,6 +122,15 @@ export default function MobileApplicationCard({
             >
               <Trash2 className="h-3 w-3 mr-1" />
               Delete
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onView(application)}
+              className="text-blue-600 border-blue-300 hover:bg-blue-50"
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              View
             </Button>
           </div>
           {application.resumeUrl && (

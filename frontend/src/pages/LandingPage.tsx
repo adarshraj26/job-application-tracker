@@ -199,7 +199,7 @@ export default function LandingPage() {
   const categories = ["Core", "Analytics", "Productivity", "Communication", "Security", "Motivation"]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden">
       <LandingHeader />
       {/* Hero Section */}
       <section className="relative overflow-hidden">
@@ -211,17 +211,18 @@ export default function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 md:mb-8 italic leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4 sm:mb-6 md:mb-8 italic leading-tight px-2">
                 Master Your Career Journey
                 <br />
                 <span className="text-gray-900 dark:text-white">
                   One <span className="relative inline-block">
                     Application
                     <svg 
-                      className="absolute -bottom-1 sm:-bottom-2 md:-bottom-3 left-0 w-full h-2 sm:h-3 md:h-4 text-purple-400 dark:text-purple-300" 
+                      className="absolute -bottom-1 sm:-bottom-2 md:-bottom-3 left-0 w-full h-2 sm:h-3 md:h-4 text-purple-400 dark:text-purple-300 overflow-visible" 
                       viewBox="0 0 300 25" 
                       fill="none" 
                       xmlns="http://www.w3.org/2000/svg"
+                      style={{ maxWidth: '100%' }}
                     >
                       {/* Main scribbled line */}
                       <path 
@@ -489,10 +490,10 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8 leading-tight">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8 leading-tight">
                 Streamline Your Application Process
               </h2>
-              <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 md:mb-10">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 md:mb-10">
                 Capture opportunities from any job board instantly. Our intelligent system helps you organize, 
                 prioritize, and optimize your application strategy for maximum success.
               </p>
@@ -515,12 +516,12 @@ export default function LandingPage() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
+              className="relative w-full max-w-md mx-auto lg:mx-0"
             >
-              <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 shadow-2xl">
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6">
+              <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-4 sm:p-6 md:p-8 shadow-2xl">
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-4 sm:p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Application Dashboard</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Application Dashboard</h3>
                     <div className="flex space-x-2">
                       <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                       <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
@@ -530,15 +531,15 @@ export default function LandingPage() {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Applied - 12 jobs</span>
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Applied - 12 jobs</span>
                     </div>
                     <div className="flex items-center space-x-3 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Interviewing - 3 jobs</span>
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Interviewing - 3 jobs</span>
                     </div>
                     <div className="flex items-center space-x-3 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
                       <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                      <span className="text-sm text-gray-700 dark:text-gray-300">Offers - 1 job</span>
+                      <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">Offers - 1 job</span>
                     </div>
                   </div>
                 </div>
@@ -557,10 +558,10 @@ export default function LandingPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-8 sm:mb-12 md:mb-16"
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 md:mb-8">
               Loved by Job Seekers Worldwide
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 dark:text-gray-300">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300">
               See what our users have to say about their experience
             </p>
           </motion.div>
@@ -575,13 +576,13 @@ export default function LandingPage() {
                 whileHover={{ y: -5 }}
               >
                 <Card className="h-full border-0 shadow-lg hover:shadow-xl transition-all duration-300 bg-white dark:bg-gray-800">
-                  <CardContent className="p-6 sm:p-8">
+                  <CardContent className="p-4 sm:p-6 md:p-8">
                     <div className="flex items-center mb-3 sm:mb-4">
                       {[...Array(testimonial.rating)].map((_, i) => (
                         <Star key={i} className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400 fill-current" />
                       ))}
                     </div>
-                    <p className="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 italic">
+                    <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 italic">
                       "{testimonial.content}"
                     </p>
                     <div className="flex items-center">
@@ -613,25 +614,26 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 md:mb-8">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 md:mb-8">
               Ready to Accelerate Your Career Growth?
             </h2>
-            <p className="text-lg sm:text-xl md:text-2xl text-blue-100 mb-8 sm:mb-10">
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-blue-100 mb-8 sm:mb-10">
               Join ambitious professionals who have already transformed their job search and landed 
               their ideal positions with our comprehensive platform.
             </p>
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto"
             >
-              <Link to="/signup">
-                <Button size="lg" className="bg-red-500 hover:bg-red-600 text-white font-bold px-8 sm:px-10 py-4 sm:py-5 text-lg sm:text-xl md:text-2xl shadow-xl hover:shadow-2xl border border-gray-800 rounded-sm transform hover:scale-105 transition-all duration-300 ease-in-out">
+              <Link to="/signup" className="block w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl lg:text-2xl shadow-xl hover:shadow-2xl border border-gray-800 rounded-sm transform hover:scale-105 transition-all duration-300 ease-in-out">
                   Start Your Free Trial
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
             </motion.div>
-            <p className="text-blue-200 mt-4 sm:mt-6 text-base sm:text-lg">
+            <p className="text-blue-200 mt-4 sm:mt-6 text-sm sm:text-base md:text-lg">
               No credit card required • 14-day free trial
             </p>
           </motion.div>

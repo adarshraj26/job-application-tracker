@@ -19,9 +19,10 @@ interface ApplicationModalProps {
   application: JobApplication | null
   isOpen: boolean
   onClose: () => void
+  viewMode?: 'edit' | 'view'
 }
 
-export default function ApplicationModal({ application, isOpen, onClose }: ApplicationModalProps) {
+export default function ApplicationModal({ application, isOpen, onClose, viewMode = 'edit' }: ApplicationModalProps) {
   const { updateApplication } = useApplications()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | undefined>()
@@ -132,19 +133,23 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
     <Dialog open={isOpen} onOpenChange={() => {}}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-white via-blue-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-2 border-blue-200 dark:border-blue-700 shadow-2xl text-gray-900 dark:text-gray-100 [&>button]:hidden">
         <DialogHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg -m-6 mb-6 p-6 relative">
-          <DialogTitle className="text-2xl font-bold text-white">Edit Application</DialogTitle>
+          <DialogTitle className="text-2xl font-bold text-white">
+            {viewMode === 'view' ? 'View Application' : 'Edit Application'}
+          </DialogTitle>
           <DialogDescription className="text-blue-100">
-            Update the details of your job application.
+            {viewMode === 'view' 
+              ? 'Review all the details of your job application.' 
+              : 'Update your job application details and track your progress.'
+            }
           </DialogDescription>
-          
-          {/* Circular Close Button */}
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors duration-200 cursor-pointer"
-            type="button"
+            className="absolute top-4 right-4 text-white hover:bg-white/20"
           >
-            <X className="h-5 w-5 text-white hover:text-blue-100" />
-          </button>
+            <X className="h-4 w-4" />
+          </Button>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white/80 dark:bg-gray-800/80 rounded-lg p-6 border border-gray-200 dark:border-gray-600">
@@ -156,6 +161,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 placeholder="Enter company name"
                 className="border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 {...register('companyName')}
+                disabled={viewMode === 'view'}
               />
               {errors.companyName && (
                 <p className="text-sm text-red-500">{errors.companyName.message}</p>
@@ -169,6 +175,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 placeholder="Enter position/role"
                 className="border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 {...register('position')}
+                disabled={viewMode === 'view'}
               />
               {errors.position && (
                 <p className="text-sm text-red-500">{errors.position.message}</p>
@@ -184,6 +191,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 placeholder="Enter job location"
                 className="border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                 {...register('location')}
+                disabled={viewMode === 'view'}
               />
               {errors.location && (
                 <p className="text-sm text-red-500">{errors.location.message}</p>
@@ -192,7 +200,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
 
             <div className="space-y-2">
               <Label htmlFor="workMode" className="text-sm font-semibold text-gray-700 dark:text-gray-200">Work Mode</Label>
-              <Select onValueChange={(value) => setValue('workMode', value as any)} value={watch('workMode')}>
+              <Select onValueChange={(value) => setValue('workMode', value as any)} value={watch('workMode')} disabled={viewMode === 'view'}>
                 <SelectTrigger className="border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                   <SelectValue placeholder="Select work mode" />
                 </SelectTrigger>
@@ -214,6 +222,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
               placeholder="Enter salary range"
               className="border-2 border-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 transition-colors bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
               {...register('salary')}
+              disabled={viewMode === 'view'}
             />
             {errors.salary && (
               <p className="text-sm text-red-500">{errors.salary.message}</p>
@@ -227,6 +236,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 id="appliedDate"
                 type="date"
                 {...register('appliedDate')}
+                disabled={viewMode === 'view'}
               />
               {errors.appliedDate && (
                 <p className="text-sm text-destructive">{errors.appliedDate.message}</p>
@@ -239,6 +249,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 id="nextInterviewDate"
                 type="date"
                 {...register('nextInterviewDate')}
+                disabled={viewMode === 'view'}
               />
             </div>
           </div>
@@ -246,7 +257,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="status">Status</Label>
-              <Select onValueChange={(value) => setValue('status', value as any)} value={watch('status')}>
+              <Select onValueChange={(value) => setValue('status', value as any)} value={watch('status')} disabled={viewMode === 'view'}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
@@ -262,7 +273,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
 
             <div>
               <Label htmlFor="outcome">Outcome</Label>
-              <Select onValueChange={(value) => setValue('outcome', value as any)} value={watch('outcome')}>
+              <Select onValueChange={(value) => setValue('outcome', value as any)} value={watch('outcome')} disabled={viewMode === 'view'}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select outcome" />
                 </SelectTrigger>
@@ -279,7 +290,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
 
           <div>
             <Label htmlFor="source">Source of Application</Label>
-            <Select onValueChange={(value) => setValue('source', value as any)} value={watch('source')}>
+            <Select onValueChange={(value) => setValue('source', value as any)} value={watch('source')} disabled={viewMode === 'view'}>
               <SelectTrigger>
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>
@@ -300,6 +311,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 id="sourceOther"
                 placeholder="Specify other source"
                 {...register('sourceOther')}
+                disabled={viewMode === 'view'}
               />
             </div>
           )}
@@ -311,6 +323,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
                 type="checkbox"
                 {...register('mailReceived')}
                 className="rounded"
+                disabled={viewMode === 'view'}
               />
               <Label htmlFor="mailReceived">Mail received from company</Label>
             </div>
@@ -328,6 +341,7 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
               id="notes"
               placeholder="Add any additional notes..."
               {...register('notes')}
+              disabled={viewMode === 'view'}
             />
           </div>
 
@@ -342,21 +356,33 @@ export default function ApplicationModal({ application, isOpen, onClose }: Appli
           )}
 
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-200 dark:border-gray-600">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={onClose}
-              className="px-6 py-2 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
-            >
-              Cancel
-            </Button>
-            <Button 
-              type="submit" 
-              disabled={isSubmitting}
-              className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Updating...' : 'Update Application'}
-            </Button>
+            {viewMode === 'view' ? (
+              <Button 
+                type="button" 
+                onClick={onClose}
+                className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
+              >
+                Close
+              </Button>
+            ) : (
+              <>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={onClose}
+                  className="px-6 py-2 border-2 border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Updating...' : 'Update Application'}
+                </Button>
+              </>
+            )}
           </div>
         </form>
       </DialogContent>
