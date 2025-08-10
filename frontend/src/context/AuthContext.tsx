@@ -47,10 +47,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const response = await apiService.getCurrentUser()
           console.log('Get current user response:', response)
           
-          if (response.status === 'success' && response.data) {
-            const userData = response.data as any
+          if (response.status === 'success' && response.data && (response.data as any).user) {
+            const userData = (response.data as any).user
             setUser({
-              id: userData.id || 'mock-user-id',
+              id: userData.id || userData._id || 'mock-user-id',
               email: userData.email || 'mock@example.com',
               fullName: userData.fullName || 'Mock User',
               isProUser: userData.isProUser || false,
@@ -58,19 +58,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               preferences: userData.preferences || {
                 theme: 'light',
                 notifications: { email: true, browser: true }
-              }
+              },
+              lastLogin: userData.lastLogin ? new Date(userData.lastLogin) : undefined,
+              createdAt: userData.createdAt ? new Date(userData.createdAt) : undefined
             })
             console.log('User authenticated successfully')
           } else {
             console.log('Failed to authenticate user, removing token')
             localStorage.removeItem('token')
+            setUser(null)
           }
         } catch (error) {
           console.error('Failed to get current user:', error)
-          localStorage.removeItem('token')
+          // Only remove token if it's a 401 (unauthorized) error
+          if (error instanceof Error && error.message.includes('401')) {
+            localStorage.removeItem('token')
+          }
+          setUser(null)
         }
       } else {
         console.log('No token found, user not authenticated')
+        setUser(null)
       }
       setIsLoading(false)
     }
@@ -90,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('token', data.token)
         const userData = data.user || data
         setUser({
-          id: userData.id || 'mock-user-id',
+          id: userData.id || userData._id || 'mock-user-id',
           email: userData.email || 'mock@example.com',
           fullName: userData.fullName || 'Mock User',
           isProUser: userData.isProUser || false,
@@ -98,7 +106,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           preferences: userData.preferences || {
             theme: 'light',
             notifications: { email: true, browser: true }
-          }
+          },
+          lastLogin: userData.lastLogin ? new Date(userData.lastLogin) : undefined,
+          createdAt: userData.createdAt ? new Date(userData.createdAt) : undefined
         })
         console.log('Login successful, user set:', userData)
       } else {
@@ -121,7 +131,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.setItem('token', data.token)
         const userData = data.user || data
         setUser({
-          id: userData.id || 'mock-user-id',
+          id: userData.id || userData._id || 'mock-user-id',
           email: userData.email || 'mock@example.com',
           fullName: userData.fullName || 'Mock User',
           isProUser: userData.isProUser || false,
@@ -129,7 +139,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           preferences: userData.preferences || {
             theme: 'light',
             notifications: { email: true, browser: true }
-          }
+          },
+          lastLogin: userData.lastLogin ? new Date(userData.lastLogin) : undefined,
+          createdAt: userData.createdAt ? new Date(userData.createdAt) : undefined
         })
         
         // Reset tour for new users

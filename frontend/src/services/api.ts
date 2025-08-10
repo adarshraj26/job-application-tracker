@@ -269,10 +269,27 @@ class ApiService {
   async getCurrentUser() {
     console.log('🟡 ApiService: Using REAL backend for getCurrentUser');
     
-    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
-      headers: this.getAuthHeaders(),
-    });
-    return this.handleResponse(response);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
+        headers: this.getAuthHeaders(),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      console.log('🟡 ApiService: getCurrentUser response status:', response.status);
+      console.log('🟡 ApiService: getCurrentUser response ok:', response.ok);
+      
+      return this.handleResponse(response);
+    } catch (error) {
+      console.error('🟡 ApiService: getCurrentUser error:', error);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error('Get current user request timed out. Please try again.');
+      }
+      throw error;
+    }
   }
 
   async updatePassword(passwords: { currentPassword: string; newPassword: string }) {
