@@ -74,9 +74,9 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
           <TableHeader>
             <TableRow>
               <TableHead>S.No.</TableHead>
-              <TableHead className="hidden sm:table-cell">Company</TableHead>
-              <TableHead className="hidden md:table-cell">Position</TableHead>
-              <TableHead className="hidden lg:table-cell">Location</TableHead>
+              <TableHead>Company</TableHead>
+              <TableHead className="hidden sm:table-cell">Position</TableHead>
+              <TableHead className="hidden md:table-cell">Location</TableHead>
               <TableHead className="hidden xl:table-cell">Contact</TableHead>
               <TableHead className="hidden lg:table-cell">Work Mode</TableHead>
               <TableHead className="hidden xl:table-cell">Salary</TableHead>
@@ -93,11 +93,14 @@ export default function ApplicationTable({ applications }: ApplicationTableProps
                 <TableCell className="font-medium text-center">
                   {index + 1}
                 </TableCell>
-                <TableCell className="font-medium hidden sm:table-cell">
-                  {application.companyName}
+                <TableCell className="font-medium">
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-sm">{application.companyName}</span>
+                    <span className="text-xs text-muted-foreground hidden sm:inline">{application.position}</span>
+                  </div>
                 </TableCell>
-                <TableCell className="hidden md:table-cell">{application.position}</TableCell>
-                <TableCell className="hidden lg:table-cell">{application.location}</TableCell>
+                <TableCell className="hidden sm:table-cell">{application.position}</TableCell>
+                <TableCell className="hidden md:table-cell">{application.location}</TableCell>
                 <TableCell className="hidden xl:table-cell">
                   {application.contactPerson ? (
                     <div className="text-sm">

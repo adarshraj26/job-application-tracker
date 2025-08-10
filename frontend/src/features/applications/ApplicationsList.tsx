@@ -15,7 +15,7 @@ interface ApplicationsListProps {
 
 export default function ApplicationsList({ applications: propApplications }: ApplicationsListProps) {
   const { applications: contextApplications, deleteApplication } = useApplications()
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table')
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards') // Default to cards for better mobile UX
   const [selectedApplication, setSelectedApplication] = useState<JobApplication | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
