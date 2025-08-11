@@ -252,7 +252,7 @@ export default function HelpCenterPage() {
                     return (
                       <div key={itemIndex} className="border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
                         <button
-                          className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg flex items-center justify-between"
+                          className="w-full px-4 py-3 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg flex items-center justify-between border border-gray-200 dark:border-gray-700"
                           onClick={() => toggleItem(itemId)}
                         >
                           <span className="font-medium text-gray-900 dark:text-white">{item.question}</span>
