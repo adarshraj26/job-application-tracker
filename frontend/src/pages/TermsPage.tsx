@@ -14,6 +14,8 @@ import {
   Phone
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { Footer } from '@/components/common'
+import ThemeToggle from '@/components/common/ThemeToggle'
 
 const termsSections = [
   {
@@ -111,6 +113,10 @@ const importantNotes = [
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Theme Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -346,6 +352,9 @@ export default function TermsPage() {
           </p>
         </motion.div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }

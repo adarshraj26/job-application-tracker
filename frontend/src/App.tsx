@@ -20,6 +20,9 @@ import BlogPage from './pages/BlogPage';
 import ApiDocsPage from './pages/ApiDocsPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import AboutUsPage from './pages/AboutUsPage';
+import CareersPage from './pages/CareersPage';
+import ContactPage from './pages/ContactPage';
+import TermsPage from './pages/TermsPage';
 
 // Components
 import Layout from './components/common/Layout';
@@ -44,6 +47,9 @@ function App() {
                   <Route path="/api-docs" element={<ApiDocsPage />} />
                   <Route path="/privacy" element={<PrivacyPolicyPage />} />
                   <Route path="/about" element={<AboutUsPage />} />
+                  <Route path="/careers" element={<CareersPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
                   
                   {/* Protected Routes */}
                   <Route path="/home" element={

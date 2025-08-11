@@ -16,6 +16,8 @@ import {
   ArrowRight
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { Footer } from '@/components/common'
+import ThemeToggle from '@/components/common/ThemeToggle'
 
 const privacySections = [
   {
@@ -193,6 +195,10 @@ const contactInfo = [
 export default function PrivacyPolicyPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Theme Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -343,14 +349,14 @@ export default function PrivacyPolicyPage() {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link 
-                  to="/terms-of-service"
+                  to="/terms"
                   className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <ArrowRight className="h-4 w-4 text-blue-500" />
                   <span className="text-gray-700 dark:text-gray-300">Terms of Service</span>
                 </Link>
                 <Link 
-                  to="/help-center"
+                  to="/help"
                   className="flex items-center gap-2 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <ArrowRight className="h-4 w-4 text-blue-500" />
@@ -401,6 +407,9 @@ export default function PrivacyPolicyPage() {
           </Card>
         </motion.div>
       </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
   )
 }
