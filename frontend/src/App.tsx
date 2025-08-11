@@ -15,6 +15,11 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import LandingPage from './pages/LandingPage';
 import FeaturesPage from './pages/FeaturesPage';
+import HelpCenterPage from './pages/HelpCenterPage';
+import BlogPage from './pages/BlogPage';
+import ApiDocsPage from './pages/ApiDocsPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import AboutUsPage from './pages/AboutUsPage';
 
 // Components
 import Layout from './components/common/Layout';
@@ -34,6 +39,11 @@ function App() {
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/signup" element={<SignupPage />} />
+                  <Route path="/help" element={<HelpCenterPage />} />
+                  <Route path="/blog" element={<BlogPage />} />
+                  <Route path="/api-docs" element={<ApiDocsPage />} />
+                  <Route path="/privacy" element={<PrivacyPolicyPage />} />
+                  <Route path="/about" element={<AboutUsPage />} />
                   
                   {/* Protected Routes */}
                   <Route path="/home" element={
