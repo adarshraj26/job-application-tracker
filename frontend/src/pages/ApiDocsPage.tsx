@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Code, 
   Copy, 
@@ -215,6 +214,7 @@ curl -X POST "https://api.jobtracker.com/api/applications" \\
 
 export default function ApiDocsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
+  const [activeTab, setActiveTab] = useState('javascript')
 
   const copyToClipboard = async (code: string, language: string) => {
     try {
@@ -341,14 +341,21 @@ export default function ApiDocsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <Tabs defaultValue="javascript" className="w-full">
-                    <TabsList className="grid w-full grid-cols-3">
-                      <TabsTrigger value="javascript">JavaScript</TabsTrigger>
-                      <TabsTrigger value="python">Python</TabsTrigger>
-                      <TabsTrigger value="curl">cURL</TabsTrigger>
-                    </TabsList>
+                  <div className="w-full">
+                    <div className="grid w-full grid-cols-3 mb-4">
+                      {Object.keys(codeExamples).map((language) => (
+                        <Button
+                          key={language}
+                          variant={activeTab === language ? "default" : "outline"}
+                          className="capitalize"
+                          onClick={() => setActiveTab(language)}
+                        >
+                          {language}
+                        </Button>
+                      ))}
+                    </div>
                     {Object.entries(codeExamples).map(([language, code]) => (
-                      <TabsContent key={language} value={language} className="mt-4">
+                      <div key={language} className={`mt-4 ${activeTab === language ? 'block' : 'hidden'}`}>
                         <div className="relative">
                           <Button
                             variant="outline"
@@ -366,9 +373,9 @@ export default function ApiDocsPage() {
                             <code>{code}</code>
                           </pre>
                         </div>
-                      </TabsContent>
+                      </div>
                     ))}
-                  </Tabs>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>

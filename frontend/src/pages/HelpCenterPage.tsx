@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { 
   Search, 
   MessageCircle, 
@@ -20,6 +19,7 @@ import {
   BarChart3
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 const faqData = [
   {
@@ -124,6 +124,18 @@ const helpCategories = [
 ]
 
 export default function HelpCenterPage() {
+  const [openItems, setOpenItems] = useState<Set<string>>(new Set())
+
+  const toggleItem = (itemId: string) => {
+    const newOpenItems = new Set(openItems)
+    if (newOpenItems.has(itemId)) {
+      newOpenItems.delete(itemId)
+    } else {
+      newOpenItems.add(itemId)
+    }
+    setOpenItems(newOpenItems)
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
@@ -214,7 +226,7 @@ export default function HelpCenterPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <Accordion type="single" collapsible className="space-y-4">
+            <div className="space-y-4">
               {faqData.map((category, categoryIndex) => (
                 <div key={categoryIndex} className="mb-8">
                   <div className="flex items-center mb-4">
@@ -228,21 +240,38 @@ export default function HelpCenterPage() {
                     </h3>
                   </div>
                   
-                  {category.items.map((item, itemIndex) => (
-                    <AccordionItem key={itemIndex} value={`item-${categoryIndex}-${itemIndex}`} className="border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
-                      <AccordionTrigger className="px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg">
-                        <span className="font-medium text-gray-900 dark:text-white">{item.question}</span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4">
-                        <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-                          {item.answer}
-                        </p>
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
+                  {category.items.map((item, itemIndex) => {
+                    const itemId = `item-${categoryIndex}-${itemIndex}`
+                    const isOpen = openItems.has(itemId)
+                    return (
+                      <div key={itemIndex} className="border border-gray-200 dark:border-gray-700 rounded-lg mb-2">
+                        <button
+                          className="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg flex items-center justify-between"
+                          onClick={() => toggleItem(itemId)}
+                        >
+                          <span className="font-medium text-gray-900 dark:text-white">{item.question}</span>
+                          <svg
+                            className={`w-5 h-5 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </button>
+                        {isOpen && (
+                          <div className="px-4 pb-4">
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                              {item.answer}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
                 </div>
               ))}
-            </Accordion>
+            </div>
           </motion.div>
         </div>
       </section>
